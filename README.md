@@ -1,4 +1,4 @@
-# Real Time Lab
+# Real Time Analytics in Azure Lab
 
 Hands on lab for real time analytics in Azure
 
