@@ -9,8 +9,8 @@ TODO
 ## Modules
 
 1.	Know the data
-o	Attendees get a telemetry sample in CSV format
-o	They create a cluster, db, ingest file
+o	Telemetry sample in a few CSV format (or JSON?)
+o	Create a cluster, db, ingest file
 o	They query / chart the data to learn characteristics
 2.	Setup Event Hub
 o	Attendees setup event hub with an application pumping fake data (ACI)
@@ -32,3 +32,4 @@ o	Changing upstream process to reveal "real" telemetry with late arrivals + dupl
 7.	Export to cold storage
 o	Setup continuous exporting
 8. Monitoring
+9. Time series
