@@ -1,5 +1,6 @@
 {
     "gatewayId": "4b8fg",
+    "batchId": "<GUID>",
     "batchTimestamp": "...",
     "telemetry": [
         {
