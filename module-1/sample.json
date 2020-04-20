@@ -1,0 +1,14 @@
+{
+    "gatewayId": "4b8fg",
+    "batchTimestamp": "...",
+    "telemetry": [
+        {
+            "deviceId": "5f12c",
+            "timestamp": "...",
+            "position": "...",
+            "velocity": "...",
+            "temperature": 20.3,
+            "pressure": 74.75
+        }
+    ]
+}
