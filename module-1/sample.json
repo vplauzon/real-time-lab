@@ -6,10 +6,12 @@
         {
             "deviceId": "5f12c",
             "timestamp": "...",
-            "position": "...",
-            "velocity": "...",
-            "temperature": 20.3,
-            "pressure": 74.75
+            "gps": "..."
+        },
+        {
+            "deviceId": "6b45b",
+            "timestamp": "...",
+            "exteriorTemperature": 20.3
         }
     ]
 }
