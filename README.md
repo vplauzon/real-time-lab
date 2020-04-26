@@ -85,16 +85,27 @@ Now that we have data ingested in real time, we are going to query it to get ins
 
 Go to [module 4 instructions](module-4).
 
-5.	Shape the data
+### Module 5 - Integrate external data
+
+In this module we are going to integrate external data from Azure SQL DB to enrich the ingested data.
+
 *	Ingest a couple of reference data tables (or reference?)
 *	Author update policies to transform the data using reference tables
 *	Query some more
-6.	Reporting
-*	Setup Power BI to query near real time data
-7.	Imperfect telemetry
+
+Go to [module 5 instructions](module-5).
+
+### Module 6 - Imperfect telemetry
+
 *	Changing upstream process to reveal "real" telemetry with late arrivals + duplicates
 * Introduce ASA to the rescue
-8.	Export to cold storage
+
+### Module 7 - Time series
+
+### Module 8 - Export to cold storage
+
 *	Setup continuous exporting
-9. Monitoring
-10. Time series
+
+### Module 9 - Reporting
+
+*	Setup Power BI to query near real time data
