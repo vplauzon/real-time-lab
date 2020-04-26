@@ -1,5 +1,10 @@
 # Module 1 - Know the data
 
-o	Telemetry sample in a few CSV format (or JSON?)
-o	Create a cluster, db, ingest file
-o	They query / chart the data to learn characteristics
+*	Telemetry sample in a few JSON files
+*	Create a cluster, db
+*   Connect Azure Monitor
+*   Ingest files
+*	They query / chart the data to learn characteristics
+*   Split device telemetry from the rest
+*   Parse out software version
+*   Strong typed data
