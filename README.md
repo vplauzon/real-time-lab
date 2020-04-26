@@ -14,18 +14,18 @@ They recently scaled up the size of the fleet and have had operational challenge
 
 They want to explore new ways of analysing the data and see what benefit those could bring.  They want to reuse their IoT solution based on Azure IoT Hub but change the data analysis stack to a Azure-based solution.  They have the following requirements:
 
-*   Focus on the non-video device telemetry (e.g. temperature, pressure, GPS position, etc.)
-*   Managed solution:  they do not want to manage VMs
-*   Security:  part of their data is sensitive and so we need to control access and avoid data-exfiltration
-*   Monitoring:  they need to monitor the platform (e.g. CPU usage)
-*   Real Time:  they want the data to be available for analysis in less than one minute latency
-*   Ad Hoc queries:  they want the platform to be able to perform exploratory query without shaping the data (e.g. designing indexes) in a special way for the queries
-*   Visualization:  they do not want the platform to only deal with data to be visualize with other tools ; they would like for the platform to allow visualization as close to the querying tool as possible
-*   Ability to deal with duplicates, late duplicates and late arrival data:  the telemetry delivery to IoT Hub isn't always perfect and the platform must be able to deal with those elements
-*   Time series:  a lot of analysis they want to perform is based on time series of different measurements ; the platform must be able to do those as natively as possible
-*   Export to data lake:  their data science will still need the data for long-term analysis in the data lake (Azure Data Lake Storage gen 2)
-*   Reporting:  different stakeholders in the company must be able to look at dashboards for a summary look at the fleet
-*   Democratization of data analysis:  Contoso is positioning themselves more and more as a *Data Enterprise* ; they want more and more of their employee to be able to look and explore operational data
+1.   Focus on the non-video device telemetry (e.g. temperature, pressure, GPS position, etc.)
+1.   Managed solution:  they do not want to manage VMs
+1.   Security:  part of their data is sensitive and so we need to control access and avoid data-exfiltration
+1.   Monitoring:  they need to monitor the platform (e.g. CPU usage)
+1.   Real Time:  they want the data to be available for analysis in less than one minute latency
+1.   Ad Hoc queries:  they want the platform to be able to perform exploratory query without shaping the data (e.g. designing indexes) in a special way for the queries
+1.   Visualization:  they do not want the platform to only deal with data to be visualize with other tools ; they would like for the platform to allow visualization as close to the querying tool as possible
+1.   Ability to deal with duplicates, late duplicates and late arrival data:  the telemetry delivery to IoT Hub isn't always perfect and the platform must be able to deal with those elements
+1.   Time series:  a lot of analysis they want to perform is based on time series of different measurements ; the platform must be able to do those as natively as possible
+1.   Export to data lake:  their data science will still need the data for long-term analysis in the data lake (Azure Data Lake Storage gen 2)
+1.   Reporting:  different stakeholders in the company must be able to look at dashboards for a summary look at the fleet
+1.   Democratization of data analysis:  Contoso is positioning themselves more and more as a *Data Enterprise* ; they want more and more of their employee to be able to look and explore operational data
 
 ## Design Session
 
@@ -51,28 +51,40 @@ We recommend you try to do the module on your own as much as possible in order t
 
 This is the first module in which we'll explore the data we are going to work with.
 
-*	Provision a Kusto cluster
+*	Provision a Azure Data Explorer (Kusto) cluster
 *   Query telemetry samples
 *   Prepare ingestion by developing queries
 
 Go to [module 1 instructions](module-1).
 
-2.	Setup Event Hub
-*	Attendees setup event hub with an application pumping fake data (ACI)
-*	Alternatively, the host does the setup and help attendees clone the telemetry to their event hub via Event Grid
-* Setup real time ingestion
-3. Update policies
-*   Land data in different tables reusing the queries done in module 1
-4.	Querying near real time data
-*	Attendees query the data as it get ingested into the cluster
-*   Different query challenges
-    *   Detect duplicates
-    *   Detect downtime
-    *   Plot coordinates
-    *   Compute speed curves
-*   Look at latency of data
-*	Change ingestion frequency with batch policy
-* Look at CPU impact
+### Module 2 - Setup real-time ingestion
+
+In this module we will setup the real time ingestion of data into our Kusto Cluster.
+
+*	Setup a generator of data for Azure Event Hub using Azure Container Instance (ACI)
+*   Setup ingestion in Azure Data Explorer
+
+Go to [module 2 instructions](module-2).
+
+### Module 3 - Transform the data at ingestion time
+
+In this module we will take the raw JSON data we ingested in Module 2 and transform it into strongly-typed data, at ingestion time, using the queries we developped in module 1.
+
+*   Create Stored Function
+*   Setup update policies
+
+Go to [module 3 instructions](module-3).
+
+### Module 4 - Querying real time data
+
+Now that we have data ingested in real time, we are going to query it to get insights.
+
+*   Query and chart data
+*   Compute data latency
+*   Look at Azure Data Explorer metrics (monitoring)
+
+Go to [module 4 instructions](module-4).
+
 5.	Shape the data
 *	Ingest a couple of reference data tables (or reference?)
 *	Author update policies to transform the data using reference tables
