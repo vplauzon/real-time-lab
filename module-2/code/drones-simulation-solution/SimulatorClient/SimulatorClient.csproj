@@ -11,4 +11,8 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AppInsights.TelemetryInitializers" Version="1.1.908" />
+  </ItemGroup>
+
 </Project>
