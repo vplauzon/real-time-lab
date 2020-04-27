@@ -1,6 +1,4 @@
-﻿using AppInsights.TelemetryInitializers;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Extensibility;
+﻿using Microsoft.ApplicationInsights;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -11,12 +9,13 @@ namespace SimulatorClient
 {
     internal class Simulator
     {
-        private readonly SimulatorConfiguration _configuration = new SimulatorConfiguration();
+        private readonly SimulatorConfiguration _configuration;
         private readonly TelemetryClient _telemetryClient;
 
-        public Simulator()
+        public Simulator(SimulatorConfiguration configuration, TelemetryClient telemetryClient)
         {
-            _telemetryClient = InitAppInsights(_configuration.AppInsightsKey);
+            _configuration = configuration;
+            _telemetryClient = telemetryClient;
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -26,39 +25,35 @@ namespace SimulatorClient
                 $"Register {_configuration.GatewayCount} gateways with "
                 + $"{_configuration.DronePerGateway} drones per gateway...");
 
-            var gateways = CreateGateways();
-            var tasks = from g in gateways
-                        select g.RunAsync(_configuration.DronePerGateway, cancellationToken);
+            var gateways = CreateGateways(cancellationToken);
+            var droneTasks = from g in gateways
+                             select g.RunAsync(_configuration.DronePerGateway, cancellationToken);
 
             Console.WriteLine("Start simulation...");
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(droneTasks);
         }
 
-        public void PushMessage(GatewayMessage message)
+        private IImmutableList<Gateway> CreateGateways(CancellationToken cancellationToken)
+        {
+            var gatewaysEnumerable = from i in Enumerable.Range(0, _configuration.GatewayCount)
+                                     select new Gateway() { };
+            var gateways = gatewaysEnumerable.ToImmutableArray();
+
+            foreach (var g in gateways)
+            {
+                g.NewMessage += async (sender, message) =>
+                {
+                    await PushMessageAsync(message, cancellationToken);
+                };
+            }
+
+            return gateways;
+        }
+
+        private Task PushMessageAsync(GatewayMessage message, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
-        }
-
-        private IImmutableList<FieldGateway> CreateGateways()
-        {
-            var gateways = from i in Enumerable.Range(0, _configuration.GatewayCount)
-                           select new FieldGateway();
-
-            return gateways.ToImmutableArray();
-        }
-
-        private static TelemetryClient InitAppInsights(string appInsightsKey)
-        {
-            //  Create configuration
-            var configuration = TelemetryConfiguration.CreateDefault();
-
-            //  Set Instrumentation Keys
-            configuration.InstrumentationKey = appInsightsKey;
-            //  Customize App Insights role name
-            configuration.TelemetryInitializers.Add(new RoleNameInitializer("drones-simulator"));
-
-            return new TelemetryClient(configuration);
         }
     }
 }

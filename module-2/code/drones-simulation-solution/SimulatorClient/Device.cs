@@ -4,11 +4,15 @@ using System.Threading.Tasks;
 
 namespace SimulatorClient
 {
-    internal class Device
+    public abstract class Device
     {
-        public async Task RunAsync(CancellationToken cancellationToken)
+        public event EventHandler<DroneEvent>? NewEvent;
+
+        public abstract Task RunAsync(CancellationToken cancellationToken);
+
+        protected void OnNewEvent(DroneEvent data)
         {
-            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+            NewEvent?.Invoke(this, data);
         }
     }
 }

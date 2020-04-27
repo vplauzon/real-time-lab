@@ -1,6 +1,6 @@
 ﻿namespace SimulatorClient
 {
-    public class DeviceEvent
+    public class DroneEvent
     {
     }
 }
