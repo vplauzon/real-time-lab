@@ -1,7 +1,10 @@
-﻿using Microsoft.ApplicationInsights;
+﻿using Azure.Messaging.EventHubs;
+using Azure.Messaging.EventHubs.Producer;
+using Microsoft.ApplicationInsights;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,13 +12,21 @@ namespace SimulatorClient
 {
     internal class Simulator
     {
+        private static readonly JsonSerializerOptions JSON_SERIALIZER_OPTIONS = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
         private readonly SimulatorConfiguration _configuration;
         private readonly TelemetryClient _telemetryClient;
+        private readonly EventHubProducerClient _producerClient;
 
         public Simulator(SimulatorConfiguration configuration, TelemetryClient telemetryClient)
         {
             _configuration = configuration;
             _telemetryClient = telemetryClient;
+            _producerClient =
+                new EventHubProducerClient(_configuration.EventHubConnectionString);
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -51,9 +62,15 @@ namespace SimulatorClient
             return gateways;
         }
 
-        private Task PushMessageAsync(GatewayMessage message, CancellationToken cancellationToken)
+        private async Task PushMessageAsync(GatewayMessage message, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            using (var eventBatch = await _producerClient.CreateBatchAsync(cancellationToken))
+            {
+                var buffer = JsonSerializer.SerializeToUtf8Bytes(message, JSON_SERIALIZER_OPTIONS);
+
+                eventBatch.TryAdd(new EventData(buffer));
+                await _producerClient.SendAsync(eventBatch);
+            }
         }
     }
 }
