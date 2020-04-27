@@ -17,7 +17,7 @@ namespace SimulatorClient
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
 
                 OnNewEvent(new TemperatureEvent());
             }
