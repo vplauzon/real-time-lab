@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SimulatorClient": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "APP_INSIGHTS_KEY": "a",
+        "EVENT_HUB_CONN_STRING": "b",
+        "GATEWAY_COUNT": "2"
+      }
+    }
+  }
+}
