@@ -10,7 +10,7 @@ namespace SimulatorClient
     {
         public event EventHandler<GatewayMessage>? NewMessage;
 
-        private IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
+        private volatile IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
 
         public async Task RunAsync(int droneCount, CancellationToken cancellationToken)
         {
@@ -31,22 +31,9 @@ namespace SimulatorClient
             foreach (var d in drones)
             {
                 //  Accumulate messages to push in batches
-                d.NewEvent += (sender, eventData) =>
+                d.NewEvent += (sender, droneEvent) =>
                 {
-                    do
-                    {   //  Optimistic queuing
-                        var eventQueue = _eventQueue;
-                        var original = Interlocked.CompareExchange(
-                            ref _eventQueue,
-                            eventQueue.Enqueue(eventData),
-                            _eventQueue);
-
-                        if (object.ReferenceEquals(eventQueue, original))
-                        {
-                            return;
-                        }
-                    }
-                    while (!cancellationToken.IsCancellationRequested);
+                    OptimisticQueuing(droneEvent, cancellationToken);
                 };
             }
 
@@ -64,11 +51,48 @@ namespace SimulatorClient
                     //  Pack events into one message
                     var message = new GatewayMessage
                     {
+                        Events = OptimisticDequeuing(cancellationToken).ToArray()
                     };
 
                     NewMessage?.Invoke(this, message);
                 }
             }
+        }
+
+        private void OptimisticQueuing(DroneEvent droneEvent, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var eventQueue = _eventQueue;
+                var original = Interlocked.CompareExchange(
+                    ref _eventQueue,
+                    eventQueue.Enqueue(droneEvent),
+                    eventQueue);
+
+                if (object.ReferenceEquals(eventQueue, original))
+                {
+                    return;
+                }
+            }
+        }
+
+        private IImmutableList<DroneEvent> OptimisticDequeuing(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var eventQueue = _eventQueue;
+                var original = Interlocked.CompareExchange(
+                    ref _eventQueue,
+                    ImmutableQueue<DroneEvent>.Empty,
+                    eventQueue);
+
+                if (object.ReferenceEquals(eventQueue, original))
+                {
+                    return eventQueue.ToImmutableArray();
+                }
+            }
+
+            return ImmutableQueue<DroneEvent>.Empty.ToImmutableArray();
         }
     }
 }
