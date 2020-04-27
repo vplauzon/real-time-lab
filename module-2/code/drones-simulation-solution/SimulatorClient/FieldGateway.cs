@@ -21,6 +21,11 @@ namespace SimulatorClient
             await Task.WhenAll(tasks);
         }
 
+        public void PushEvent(DeviceEvent deviceEvent)
+        {
+            throw new NotImplementedException();
+        }
+
         private IImmutableList<Device> CreateDevices(int droneCount)
         {
             var devices = from i in Enumerable.Range(0, droneCount)

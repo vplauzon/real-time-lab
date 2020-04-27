@@ -35,6 +35,11 @@ namespace SimulatorClient
             await Task.WhenAll(tasks);
         }
 
+        public void PushMessage(GatewayMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
         private IImmutableList<FieldGateway> CreateGateways()
         {
             var gateways = from i in Enumerable.Range(0, _configuration.GatewayCount)
