@@ -2,14 +2,15 @@
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using System;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimulatorClient
 {
-    internal class Simulator: IDaemon
+    internal class Simulator
     {
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly SimulatorConfiguration _configuration = new SimulatorConfiguration();
         private readonly TelemetryClient _telemetryClient;
 
@@ -18,14 +19,28 @@ namespace SimulatorClient
             _telemetryClient = InitAppInsights(_configuration.AppInsightsKey);
         }
 
-        async Task IDaemon.RunAsync()
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
-            await Task.Delay(1);
+            Console.WriteLine("Hub Feeder");
+            Console.WriteLine(
+                $"Register {_configuration.GatewayCount} gateways with "
+                + $"{_configuration.DronePerGateway} drones per gateway...");
+
+            var gateways = CreateGateways();
+            var tasks = from g in gateways
+                        select g.RunAsync(_configuration.DronePerGateway, cancellationToken);
+
+            Console.WriteLine("Start simulation...");
+
+            await Task.WhenAll(tasks);
         }
 
-        void IDaemon.Stop()
+        private IImmutableList<FieldGateway> CreateGateways()
         {
-            _cancellationTokenSource.Cancel();
+            var gateways = from i in Enumerable.Range(0, _configuration.GatewayCount)
+                           select new FieldGateway();
+
+            return gateways.ToImmutableArray();
         }
 
         private static TelemetryClient InitAppInsights(string appInsightsKey)

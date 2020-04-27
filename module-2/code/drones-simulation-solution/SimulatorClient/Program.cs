@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimulatorClient
@@ -8,19 +9,12 @@ namespace SimulatorClient
         static async Task Main(string[] args)
         {
             var simulator = new Simulator();
+            var _cancellationTokenSource = new CancellationTokenSource();
+            var task = simulator.RunAsync(_cancellationTokenSource.Token);
 
-            await RunDaemonAsync(simulator);
-        }
-
-        private static async Task RunDaemonAsync(IDaemon daemon)
-        {
-            var task = daemon.RunAsync();
-
-            AppDomain.CurrentDomain.ProcessExit += async (object? sender, EventArgs e) =>
+            AppDomain.CurrentDomain.ProcessExit += (object? sender, EventArgs e) =>
             {
-                daemon.Stop();
-
-                await task;
+                _cancellationTokenSource.Cancel();
             };
 
             await task;

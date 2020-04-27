@@ -7,9 +7,12 @@
     "Unique ID": "[uniqueString(concat(resourceGroup().id, 'iot'))]",
     "App Insights Name": "[concat('app-insights-', variables('Unique ID'))]",
     "Log Analytics Name": "[concat('log-analytics-', variables('Unique ID'))]",
-    "Event Hub Name": "[concat('event-hub-', variables('Unique ID'))]",
-    "Hub Writer": "hubowner",
-    "Hub Reader": "hubReader"
+    "Event Hub Namespace": "[concat('event-hub-', variables('Unique ID'))]",
+    "Telemetry Hub": "telemetry",
+    "Hub Owner": "hub-owner",
+    "Hub Writer": "hub-writer",
+    "Hub Reader": "hub-reader",
+    "Consumer Group Count": 20
   },
   "resources": [
     {
@@ -41,21 +44,89 @@
     },
     {
       "type": "Microsoft.EventHub/namespaces",
-      "name": "[variables('Event Hub Name')]",
+      "name": "[variables('Event Hub Namespace')]",
       "apiVersion": "2017-04-01",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "Standard",
         "tier": "Standard",
-        "capacity": 0
+        "capacity": 1
       },
       "properties": {
         "isAutoInflateEnabled": false,
-        "maximumThroughputUnits": 0,
         "kafkaEnabled": false
       },
       "resources": [
+        {
+          "type": "eventhubs",
+          "name": "[variables('Telemetry Hub')]",
+          "apiVersion": "2017-04-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.EventHub/namespaces', variables('Event Hub Namespace'))]"
+          ],
+          "properties": {
+            "messageRetentionInDays": 7,
+            "partitionCount": 32
+          },
+          "resources": [
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Owner')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Manage",
+                  "Send",
+                  "Listen"
+                ]
+              }
+            },
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Writer')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Send"
+                ]
+              }
+            },
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Reader')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Listen"
+                ]
+              }
+            }
+          ]
+        }
       ]
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+      "name": "[concat(variables('Event Hub Namespace'), '/', variables('Telemetry Hub'), '/group-', add(1, copyIndex()))]",
+      "apiVersion": "2017-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+      ],
+      "copy": {
+        "name": "Consumer Group Copy",
+        "count": "[variables('Consumer Group Count')]"
+      },
+      "properties": {
+      }
     }
   ],
   "outputs": {

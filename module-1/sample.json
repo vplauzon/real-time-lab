@@ -6,7 +6,7 @@
         {
             "droneId": "1.2.23;5f12c",
             "eventTimestamp": "...",
-            "instrument": "gps",
+            "device": "gps",
             "telemetry": {
                 "position": "..."
             }
@@ -14,7 +14,7 @@
         {
             "droneId": "1.2.22;6b45b",
             "eventTimestamp": "...",
-            "instrument": "exteriorTemperature",
+            "device": "exteriorTemperature",
             "telemetry": {
                 "exteriorTemperature": 20.3
             }

@@ -5,7 +5,8 @@
       "environmentVariables": {
         "APP_INSIGHTS_KEY": "a",
         "EVENT_HUB_CONN_STRING": "b",
-        "GATEWAY_COUNT": "2"
+        "GATEWAY_COUNT": "2",
+        "DRONE_PER_GATEWAY": "2"
       }
     }
   }

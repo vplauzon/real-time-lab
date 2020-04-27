@@ -9,6 +9,7 @@ namespace SimulatorClient
             AppInsightsKey = ConfigurationString("APP_INSIGHTS_KEY");
             EventHubConnectionString = ConfigurationString("EVENT_HUB_CONN_STRING");
             GatewayCount = ConfigurationInteger("GATEWAY_COUNT", 20);
+            DronePerGateway = ConfigurationInteger("DRONE_PER_GATEWAY", 20);
         }
 
         public string AppInsightsKey { get; set; }
@@ -16,6 +17,8 @@ namespace SimulatorClient
         public string EventHubConnectionString { get; set; }
 
         public int GatewayCount { get; set; }
+        
+        public int DronePerGateway { get; set; }
 
         #region Configuration key methods
         private string ConfigurationString(string key, string? defaultValue = null)
