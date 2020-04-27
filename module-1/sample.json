@@ -1,17 +1,23 @@
 {
     "gatewayId": "4b8fg",
-    "batchId": "<GUID>",
-    "batchTimestamp": "...",
-    "telemetry": [
+    "messageId": "<GUID>",
+    "messageTimestamp": "...",
+    "events": [
         {
-            "deviceId": "1.2.23;5f12c",
-            "timestamp": "...",
-            "gps": "..."
+            "droneId": "1.2.23;5f12c",
+            "eventTimestamp": "...",
+            "instrument": "gps",
+            "telemetry": {
+                "position": "..."
+            }
         },
         {
-            "deviceId": "1.2.22;6b45b",
-            "timestamp": "...",
-            "exteriorTemperature": 20.3
+            "droneId": "1.2.22;6b45b",
+            "eventTimestamp": "...",
+            "instrument": "exteriorTemperature",
+            "telemetry": {
+                "exteriorTemperature": 20.3
+            }
         }
     ]
 }
