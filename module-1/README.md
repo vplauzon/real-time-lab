@@ -8,3 +8,4 @@
 *   Split device telemetry from the rest
 *   Parse out software version
 *   Strong typed data
+

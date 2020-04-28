@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,22 +11,17 @@ namespace SimulatorClient
         {
         }
 
-        #region Inner Types
-        private class TemperatureEvent : DroneEvent
-        {
-        }
-        #endregion
-
         public async override Task RunAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
 
-                OnNewEvent(new TemperatureEvent
+                OnNewEvent(new DroneEvent
                 {
                     DroneId = DroneId,
-                    Device = "temperature"
+                    Device = "temperature",
+                    Measurement = 18.2
                 });
             }
         }

@@ -1,4 +1,4 @@
-﻿using AppInsights.TelemetryInitializers;
+using AppInsights.TelemetryInitializers;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using System;
