@@ -8,6 +8,13 @@ namespace SimulatorClient
     {
         public event EventHandler<DroneEvent>? NewEvent;
 
+        protected Device(string droneId)
+        {
+            DroneId = droneId;
+        }
+
+        public string DroneId { get; }
+
         public abstract Task RunAsync(CancellationToken cancellationToken);
 
         protected void OnNewEvent(DroneEvent data)
