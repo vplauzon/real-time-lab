@@ -9,3 +9,8 @@
 *   Parse out software version
 *   Strong typed data
 
+Drones have the following device onboard:
+
+* External Temperature
+* Internal Temperature
+* GPS ([GeoJSON](https://geojson.org/)) point

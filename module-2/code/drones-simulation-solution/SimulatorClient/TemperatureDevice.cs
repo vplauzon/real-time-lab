@@ -7,8 +7,12 @@ namespace SimulatorClient
 {
     public class TemperatureDevice : Device
     {
-        public TemperatureDevice(string droneId) : base(droneId)
+        private readonly bool _isExternal;
+
+        public TemperatureDevice(string droneId, bool isExternal)
+            : base(droneId)
         {
+            _isExternal = isExternal;
         }
 
         public async override Task RunAsync(CancellationToken cancellationToken)
@@ -20,8 +24,8 @@ namespace SimulatorClient
                 OnNewEvent(new DroneEvent
                 {
                     DroneId = DroneId,
-                    Device = "temperature",
-                    Measurement = 18.2
+                    Device = _isExternal ? "external-temperature" : "internal-temperature",
+                    Measurement = _isExternal ? 18.2 : 46.2
                 });
             }
         }

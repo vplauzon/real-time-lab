@@ -13,8 +13,13 @@ namespace SimulatorClient
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            var temperatureDevice = new TemperatureDevice(_droneId);
-            var devices = new Device[] { temperatureDevice };
+            var externalTemperatureDevice = new TemperatureDevice(_droneId, true);
+            var internalTemperatureDevice = new TemperatureDevice(_droneId, false);
+            var devices = new Device[]
+            {
+                externalTemperatureDevice,
+                internalTemperatureDevice
+            };
 
             foreach (var d in devices)
             {   //  Bubble up
