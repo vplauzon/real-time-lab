@@ -49,10 +49,14 @@ namespace SimulatorClient
         {
             const double START_LONGITUDE = -70.916935;
             const double START_LATITUDE = 46.783386;
+
+            var height = (int)Math.Max(1, Math.Sqrt(_configuration.GatewayCount) / 2);
             var gatewaysEnumerable = from i in Enumerable.Range(0, _configuration.GatewayCount)
+                                     let x = i / height
+                                     let y = i % height
                                      select new Gateway(
-                                         START_LONGITUDE + i * 0.005,
-                                         START_LATITUDE + i * 0.003);
+                                         START_LONGITUDE + x * 0.05,
+                                         START_LATITUDE + x * 0.02 - y * 0.04);
             var gateways = gatewaysEnumerable.ToImmutableArray();
 
             foreach (var g in gateways)
