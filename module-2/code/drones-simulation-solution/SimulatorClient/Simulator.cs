@@ -47,8 +47,12 @@ namespace SimulatorClient
 
         private IImmutableList<Gateway> CreateGateways(CancellationToken cancellationToken)
         {
+            const double START_LONGITUDE = -70.916935;
+            const double START_LATITUDE = 46.783386;
             var gatewaysEnumerable = from i in Enumerable.Range(0, _configuration.GatewayCount)
-                                     select new Gateway() { };
+                                     select new Gateway(
+                                         START_LONGITUDE + i * 0.005,
+                                         START_LATITUDE + i * 0.003);
             var gateways = gatewaysEnumerable.ToImmutableArray();
 
             foreach (var g in gateways)

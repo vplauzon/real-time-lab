@@ -8,8 +8,14 @@ namespace SimulatorClient
     public class Drone
     {
         private readonly string _droneId = "1.2.22;" + Guid.NewGuid().GetHashCode().ToString("x8");
+        private readonly GpsDevice _gpsDevice;
 
         public event EventHandler<DroneEvent>? NewEvent;
+
+        public Drone(double gatewayLongitude, double gatewayLatitude)
+        {
+            _gpsDevice = new GpsDevice(_droneId, gatewayLongitude, gatewayLatitude);
+        }
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
@@ -18,7 +24,8 @@ namespace SimulatorClient
             var devices = new Device[]
             {
                 externalTemperatureDevice,
-                internalTemperatureDevice
+                internalTemperatureDevice,
+                _gpsDevice
             };
 
             foreach (var d in devices)

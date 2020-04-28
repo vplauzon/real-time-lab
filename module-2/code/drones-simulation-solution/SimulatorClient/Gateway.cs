@@ -8,10 +8,18 @@ namespace SimulatorClient
 {
     internal class Gateway
     {
+        private readonly string _gatewayId = Guid.NewGuid().GetHashCode().ToString("x8");
+        private readonly double _longitude;
+        private readonly double _latitude;
+        private volatile IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
+
         public event EventHandler<GatewayMessage>? NewMessage;
 
-        private readonly string _gatewayId = Guid.NewGuid().GetHashCode().ToString("x8");
-        private volatile IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
+        public Gateway(double longitude, double latitude)
+        {
+            _longitude = longitude;
+            _latitude = latitude;
+        }
 
         public async Task RunAsync(int droneCount, CancellationToken cancellationToken)
         {
@@ -26,7 +34,7 @@ namespace SimulatorClient
         private IImmutableList<Drone> CreateDrones(int droneCount, CancellationToken cancellationToken)
         {
             var dronesEnumerable = from i in Enumerable.Range(0, droneCount)
-                                   select new Drone();
+                                   select new Drone(_longitude, _latitude);
             var drones = dronesEnumerable.ToImmutableArray();
 
             foreach (var d in drones)

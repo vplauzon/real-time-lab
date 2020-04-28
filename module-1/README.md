@@ -13,4 +13,4 @@ Drones have the following device onboard:
 
 * External Temperature
 * Internal Temperature
-* GPS ([GeoJSON](https://geojson.org/)) point
+* GPS ([GeoJSON](https://geojson.org/) point, cf [RFC 7946](https://tools.ietf.org/html/rfc7946))
