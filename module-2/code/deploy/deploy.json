@@ -118,7 +118,6 @@
       "apiVersion": "2018-10-01",
       "type": "Microsoft.ContainerInstance/containerGroups",
       "name": "[variables('Aci Name')]",
-      "condition": false,
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
@@ -132,7 +131,7 @@
               "environmentVariables": [
                 {
                   "name": "EVENT_HUB_CONN_STRING",
-                  "value": "A"
+                  "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('Event Hub Namespace'), variables('Telemetry Hub'), variables('Hub Writer')), '2017-04-01').primaryConnectionString]"
                 },
                 {
                   "name": "GATEWAY_COUNT",
@@ -158,9 +157,5 @@
     }
   ],
   "outputs": {
-    "q": {
-      "type": "object",
-      "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub')), '2017-04-01')]"
-    }
   }
 }
