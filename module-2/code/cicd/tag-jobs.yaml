@@ -23,5 +23,5 @@ jobs:
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
-              filePath: $(Pipeline.Workspace)/scripts/pull-tag-push.sh
+              filePath: scripts/pull-tag-push.sh
               arguments: $(image-name) $(tag) ${{ parameters.targetVersion }}

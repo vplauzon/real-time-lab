@@ -16,7 +16,7 @@ variables:
   sub-folder:  module-2/code
   mainVersion: '0.1'
   tag: '$(mainVersion).$(Build.BuildId)'
-  image-name:  vplauzon/drone-simulatin
+  image-name:  vplauzon/drone-simulation
   docker-registry-endpoint:  'vplauzon-docker-hub'
 
 stages:
