@@ -142,46 +142,7 @@
           }
         ],
         "restartPolicy": "Always",
-        "osType": "string",
-        "volumes": [
-          {
-            "name": "string",
-            "azureFile": {
-              "shareName": "string",
-              "readOnly": "boolean",
-              "storageAccountName": "string",
-              "storageAccountKey": "string"
-            },
-            "emptyDir": {
-            },
-            "secret": {
-            },
-            "gitRepo": {
-              "directory": "string",
-              "repository": "string",
-              "revision": "string"
-            }
-          }
-        ],
-        "diagnostics": {
-          "logAnalytics": {
-            "workspaceId": "string",
-            "workspaceKey": "string",
-            "logType": "string",
-            "metadata": {
-            }
-          }
-        },
-        "networkProfile": {
-          "id": "string"
-        },
-        "dnsConfig": {
-          "nameServers": [
-            "string"
-          ],
-          "searchDomains": "string",
-          "options": "string"
-        }
+        "osType": "Linux"
       }
     }
   ],

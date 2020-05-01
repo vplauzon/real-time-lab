@@ -20,6 +20,11 @@ jobs:
               command: login
               containerRegistry: '$(docker-registry-endpoint)'
           - task: Bash@3
+            displayName: ls
+            inputs:
+              targetType: 'inline'
+              script:  ls -l $(sub-folder)/cicd
+          - task: Bash@3
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
