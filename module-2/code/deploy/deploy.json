@@ -125,15 +125,6 @@
             "name": "main",
             "properties": {
               "image": "vplauzon/drone-simulation:experimental",
-              "command": [
-                "string"
-              ],
-              "ports": [
-                {
-                  "protocol": "string",
-                  "port": "integer"
-                }
-              ],
               "environmentVariables": [
                 {
                   "name": "string",
@@ -143,85 +134,14 @@
               ],
               "resources": {
                 "requests": {
-                  "memoryInGB": "number",
-                  "cpu": "number",
-                  "gpu": {
-                    "count": "integer",
-                    "sku": "string"
-                  }
-                },
-                "limits": {
-                  "memoryInGB": "number",
-                  "cpu": "number",
-                  "gpu": {
-                    "count": "integer",
-                    "sku": "string"
-                  }
+                  "memoryInGB": 1,
+                  "cpu": 1
                 }
-              },
-              "volumeMounts": [
-                {
-                  "name": "string",
-                  "mountPath": "string",
-                  "readOnly": "boolean"
-                }
-              ],
-              "livenessProbe": {
-                "exec": {
-                  "command": [
-                    "string"
-                  ]
-                },
-                "httpGet": {
-                  "path": "string",
-                  "port": "integer",
-                  "scheme": "string"
-                },
-                "initialDelaySeconds": "integer",
-                "periodSeconds": "integer",
-                "failureThreshold": "integer",
-                "successThreshold": "integer",
-                "timeoutSeconds": "integer"
-              },
-              "readinessProbe": {
-                "exec": {
-                  "command": [
-                    "string"
-                  ]
-                },
-                "httpGet": {
-                  "path": "string",
-                  "port": "integer",
-                  "scheme": "string"
-                },
-                "initialDelaySeconds": "integer",
-                "periodSeconds": "integer",
-                "failureThreshold": "integer",
-                "successThreshold": "integer",
-                "timeoutSeconds": "integer"
               }
             }
           }
         ],
-        "imageRegistryCredentials": [
-          {
-            "server": "string",
-            "username": "string",
-            "password": "string"
-          }
-        ],
-        "restartPolicy": "string",
-        "ipAddress": {
-          "ports": [
-            {
-              "protocol": "string",
-              "port": "integer"
-            }
-          ],
-          "type": "string",
-          "ip": "string",
-          "dnsNameLabel": "string"
-        },
+        "restartPolicy": "Always",
         "osType": "string",
         "volumes": [
           {
