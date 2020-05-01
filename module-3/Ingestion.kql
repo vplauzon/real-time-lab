@@ -1,3 +1,7 @@
+//////////////////////////////////////////////////////////////////////////////////
+//  landing
+//////////////////////////////////////////////////////////////////////////////////
+
 //  Create a landing table for telemetry
 .create table landing(document:dynamic)
 
@@ -8,14 +12,14 @@
 .alter table landing policy retention "{'SoftDeletePeriod': '0:10:00', 'Recoverability':'Enabled'}"
 
 //  Alter ingestion policy to ingest more often than default (5 minutes)
-.alter table landing policy ingestionbatching "{'MaximumBatchingTimeSpan': '0:0:10'}"
+.alter table landing policy ingestionbatching "{'MaximumBatchingTimeSpan': '0:0:10', 'MaximumNumberOfItems': 10000}"
 
-//  Look at the landing table
-landing
-| limit 12
+//////////////////////////////////////////////////////////////////////////////////
+//  landingTransformed
+//////////////////////////////////////////////////////////////////////////////////
 
 //  Function used to parse the raw telemetry into an intermediate table
-.create-or-alter function parseRawTelemetry(){
+.create-or-alter function parseLanding(){
     landing
     //  Project strong type message meta data
     | project gatewayId=tostring(document.gatewayId),
@@ -30,8 +34,7 @@ landing
     | mv-expand events
     //  Project strong type event meta data
     | extend eventTimestamp=todatetime(events.eventTimestamp)
-    //  Parse 2 components out of droneId
-    | parse tostring(events.droneId) with droneVersion ";" droneId
+    | extend droneId=tostring(events.droneId)
     | extend device=tostring(events.device)
     //  Keep the specific of the device measurement in JSON / dynamic
     | extend measurement=events.measurement
@@ -40,7 +43,7 @@ landing
 }
 
 //  Create an intermediate table for telemetry
-.create table genericTelemetry(
+.create table landingTransformed(
     gatewayId:string,
     messageId:string,
     messageTimestamp:datetime,
@@ -48,20 +51,74 @@ landing
     hubEnqueudTime:datetime,
     hubOffset:int,
     eventTimestamp:datetime,
-    droneVersion:string,
     droneId:string,
     device:string,
     measurement:dynamic)
 
 //  Alter retention policy as this is also only for end-user queries
-.alter table genericTelemetry policy retention "{'SoftDeletePeriod': '0:10:00', 'Recoverability':'Enabled'}"
+.alter table landingTransformed policy retention "{'SoftDeletePeriod': '0:10:00', 'Recoverability':'Enabled'}"
 
-//  Create an update policy to transfer landing to genericTelemetry
-.alter table genericTelemetry policy update
-@'[{"IsEnabled": true, "Source": "landing", "Query": "parseRawTelemetry", "IsTransactional": true, "PropagateIngestionProperties": false}]'
+//  Create an update policy to transfer landing to landingTransformed
+.alter table landingTransformed policy update
+@'[{"IsEnabled": true, "Source": "landing", "Query": "parseLanding", "IsTransactional": true, "PropagateIngestionProperties": false}]'
+
+//////////////////////////////////////////////////////////////////////////////////
+//  telemetry
+//////////////////////////////////////////////////////////////////////////////////
+
+//  Function used to parse the transformed telemetry into the "final" table
+.create-or-alter function parseTransformedTelemetry(){
+    landingTransformed
+    //  Parse 2 components out of droneId
+    | parse droneId with droneVersion ";" droneId
+    | extend longitude=iff(device=="GPS", todouble(measurement.coordinates[0]), double(null))
+    | extend latitude=iff(device=="GPS", todouble(measurement.coordinates[1]), double(null))
+    | extend temparature=iif(device=="external-temperature" or device=="internal-temperature", todouble(measurement), double(null))
+    | project gatewayId,
+        messageId,
+        messageTimestamp,
+        droneId,
+        droneVersion,
+        eventTimestamp,
+        device,
+        temparature,
+        longitude,
+        latitude,
+        hubSequenceNumber,
+        hubEnqueudTime,
+        hubOffset
+}
+
+//  Create the telemetry table
+.create table telemetry(
+    gatewayId:string,
+    messageId:string,
+    messageTimestamp:datetime,
+    droneId:string,
+    droneVersion:string,
+    eventTimestamp:datetime,
+    device:string,
+    temperature:double,
+    longitude:double,
+    latitude:double,
+    hubSequenceNumber:int,
+    hubEnqueudTime:datetime,
+    hubOffset:int
+)
+
+//  Create an update policy to transfer landingTransformed to telemetry
+.alter table telemetry policy update
+@'[{"IsEnabled": true, "Source": "landingTransformed", "Query": "parseTransformedTelemetry", "IsTransactional": true, "PropagateIngestionProperties": false}]'
+
 
 .show table landing extents
 
-.show table genericTelemetry extents 
+.show table landingTransformed extents 
 
-genericTelemetry
+landingTransformed
+
+telemetry
+| limit 10
+
+telemetry
+| count 
