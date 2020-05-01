@@ -5,30 +5,16 @@
   },
   "variables": {
     "Unique ID": "[uniqueString(concat(resourceGroup().id, 'iot'))]",
-    "App Insights Name": "[concat('app-insights-', variables('Unique ID'))]",
     "Log Analytics Name": "[concat('log-analytics-', variables('Unique ID'))]",
     "Event Hub Namespace": "[concat('event-hub-', variables('Unique ID'))]",
     "Telemetry Hub": "telemetry",
     "Hub Owner": "hub-owner",
     "Hub Writer": "hub-writer",
     "Hub Reader": "hub-reader",
-    "Consumer Group Count": 20
+    "Consumer Group Count": 20,
+    "Aci Name": "[concat('aci-', variables('Unique ID'))]",
   },
   "resources": [
-    {
-      "type": "Microsoft.Insights/components",
-      "name": "[variables('App Insights Name')]",
-      "apiVersion": "2015-05-01",
-      "location": "[resourceGroup().location]",
-      "tags": {
-      },
-      "kind": "web",
-      "properties": {
-        "Application_Type": "web"
-      },
-      "dependsOn": [
-      ]
-    },
     {
       "type": "Microsoft.OperationalInsights/workspaces",
       "name": "[variables('Log Analytics Name')]",
@@ -126,6 +112,156 @@
         "count": "[variables('Consumer Group Count')]"
       },
       "properties": {
+      }
+    },
+    {
+      "apiVersion": "2018-10-01",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "name": "[variables('Aci Name')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "containers": [
+          {
+            "name": "main",
+            "properties": {
+              "image": "vplauzon/drone-simulation:experimental",
+              "command": [
+                "string"
+              ],
+              "ports": [
+                {
+                  "protocol": "string",
+                  "port": "integer"
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "string",
+                  "value": "string",
+                  "secureValue": "string"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": "number",
+                  "cpu": "number",
+                  "gpu": {
+                    "count": "integer",
+                    "sku": "string"
+                  }
+                },
+                "limits": {
+                  "memoryInGB": "number",
+                  "cpu": "number",
+                  "gpu": {
+                    "count": "integer",
+                    "sku": "string"
+                  }
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "string",
+                  "mountPath": "string",
+                  "readOnly": "boolean"
+                }
+              ],
+              "livenessProbe": {
+                "exec": {
+                  "command": [
+                    "string"
+                  ]
+                },
+                "httpGet": {
+                  "path": "string",
+                  "port": "integer",
+                  "scheme": "string"
+                },
+                "initialDelaySeconds": "integer",
+                "periodSeconds": "integer",
+                "failureThreshold": "integer",
+                "successThreshold": "integer",
+                "timeoutSeconds": "integer"
+              },
+              "readinessProbe": {
+                "exec": {
+                  "command": [
+                    "string"
+                  ]
+                },
+                "httpGet": {
+                  "path": "string",
+                  "port": "integer",
+                  "scheme": "string"
+                },
+                "initialDelaySeconds": "integer",
+                "periodSeconds": "integer",
+                "failureThreshold": "integer",
+                "successThreshold": "integer",
+                "timeoutSeconds": "integer"
+              }
+            }
+          }
+        ],
+        "imageRegistryCredentials": [
+          {
+            "server": "string",
+            "username": "string",
+            "password": "string"
+          }
+        ],
+        "restartPolicy": "string",
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "string",
+              "port": "integer"
+            }
+          ],
+          "type": "string",
+          "ip": "string",
+          "dnsNameLabel": "string"
+        },
+        "osType": "string",
+        "volumes": [
+          {
+            "name": "string",
+            "azureFile": {
+              "shareName": "string",
+              "readOnly": "boolean",
+              "storageAccountName": "string",
+              "storageAccountKey": "string"
+            },
+            "emptyDir": {
+            },
+            "secret": {
+            },
+            "gitRepo": {
+              "directory": "string",
+              "repository": "string",
+              "revision": "string"
+            }
+          }
+        ],
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "string",
+            "workspaceKey": "string",
+            "logType": "string",
+            "metadata": {
+            }
+          }
+        },
+        "networkProfile": {
+          "id": "string"
+        },
+        "dnsConfig": {
+          "nameServers": [
+            "string"
+          ],
+          "searchDomains": "string",
+          "options": "string"
+        }
       }
     }
   ],

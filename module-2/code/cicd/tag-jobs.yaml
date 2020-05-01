@@ -23,5 +23,5 @@ jobs:
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
-              filePath: scripts/pull-tag-push.sh
+              filePath: $(sub-folder)/cicd/scripts/pull-tag-push.sh
               arguments: $(image-name) $(tag) ${{ parameters.targetVersion }}
