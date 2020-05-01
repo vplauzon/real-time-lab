@@ -20,21 +20,6 @@ jobs:
               command: login
               containerRegistry: '$(docker-registry-endpoint)'
           - task: Bash@3
-            displayName: pwd
-            inputs:
-              targetType: 'inline'
-              script:  pwd
-          - task: Bash@3
-            displayName: ls
-            inputs:
-              targetType: 'inline'
-              script:  'ls -l $(Pipeline.Workspace)'
-          - task: Bash@3
-            displayName: ls2
-            inputs:
-              targetType: 'inline'
-              script:  'ls -l $(Pipeline.Workspace)/scripts/scripts'
-          - task: Bash@3
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
