@@ -33,10 +33,10 @@ jobs:
             displayName: ls2
             inputs:
               targetType: 'inline'
-              script:  'ls -l $(Pipeline.Workspace)/scripts'
+              script:  'ls -l $(Pipeline.Workspace)/scripts/scripts'
           - task: Bash@3
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
-              filePath: $(Pipeline.Workspace)/scripts/pull-tag-push.sh
+              filePath: $(Pipeline.Workspace)/scripts/scripts/pull-tag-push.sh
               arguments: $(image-name) $(tag) ${{ parameters.targetVersion }}
