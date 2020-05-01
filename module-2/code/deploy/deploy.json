@@ -12,7 +12,7 @@
     "Hub Writer": "hub-writer",
     "Hub Reader": "hub-reader",
     "Consumer Group Count": 20,
-    "Aci Name": "[concat('aci-', variables('Unique ID'))]",
+    "Aci Name": "[concat('aci-', variables('Unique ID'))]"
   },
   "resources": [
     {
