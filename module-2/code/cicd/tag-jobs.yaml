@@ -30,6 +30,11 @@ jobs:
               targetType: 'inline'
               script:  'ls -l $(Pipeline.Workspace)'
           - task: Bash@3
+            displayName: ls2
+            inputs:
+              targetType: 'inline'
+              script:  'ls -l $(Pipeline.Workspace)/scripts'
+          - task: Bash@3
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
