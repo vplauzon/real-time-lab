@@ -23,10 +23,10 @@ jobs:
             displayName: ls
             inputs:
               targetType: 'inline'
-              script:  pwd
+              script:  'ls -l $(sub-folder)'
           - task: Bash@3
             displayName: Pull, tag & push
             inputs:
               targetType: 'filePath'
-              filePath: ../scripts/pull-tag-push.sh
+              filePath: $(sub-folder)/cicd/scripts/pull-tag-push.sh
               arguments: $(image-name) $(tag) ${{ parameters.targetVersion }}
