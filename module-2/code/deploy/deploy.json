@@ -119,6 +119,9 @@
       "type": "Microsoft.ContainerInstance/containerGroups",
       "name": "[variables('Aci Name')]",
       "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+      ],
       "properties": {
         "containers": [
           {
@@ -127,9 +130,16 @@
               "image": "vplauzon/drone-simulation:experimental",
               "environmentVariables": [
                 {
-                  "name": "string",
-                  "value": "string",
-                  "secureValue": "string"
+                  "name": "EVENT_HUB_CONN_STRING",
+                  "value": "[]"
+                },
+                {
+                  "name": "GATEWAY_COUNT",
+                  "value": "100"
+                },
+                {
+                  "name": "DRONE_PER_GATEWAY",
+                  "value": "2"
                 }
               ],
               "resources": {
