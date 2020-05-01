@@ -159,8 +159,8 @@
   ],
   "outputs": {
     "q": {
-      "type": "string",
-      "value": "[]"
+      "type": "object",
+      "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub')), '2017-04-01')]"
     }
   }
 }
