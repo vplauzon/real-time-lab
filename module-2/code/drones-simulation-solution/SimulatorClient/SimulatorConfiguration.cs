@@ -6,10 +6,13 @@ namespace SimulatorClient
     {
         public SimulatorConfiguration()
         {
+            AppInsightsKey = ConfigurationString("APP_INSIGHTS_KEY");
             EventHubConnectionString = ConfigurationString("EVENT_HUB_CONN_STRING");
             GatewayCount = ConfigurationInteger("GATEWAY_COUNT", 20);
             DronePerGateway = ConfigurationInteger("DRONE_PER_GATEWAY", 20);
         }
+
+        public string AppInsightsKey { get; set; }
 
         public string EventHubConnectionString { get; set; }
 
