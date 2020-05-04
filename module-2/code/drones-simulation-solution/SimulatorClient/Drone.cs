@@ -65,7 +65,7 @@ namespace SimulatorClient
         #endregion
 
         private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.03;
-        private const double DEFAULT_SPEED_IN_GEO = 0.05;
+        private const double DEFAULT_SPEED_IN_GEO = 0.5;
 
         private readonly string _droneId =
             "1.2.22;" + Guid.NewGuid().GetHashCode().ToString("x8");
