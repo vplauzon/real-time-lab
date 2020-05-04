@@ -30,8 +30,8 @@ namespace SimulatorClient
 
                 _maxDistance =
                     Math.Sqrt(deltaLongitude * deltaLongitude + deltaLatitude * deltaLatitude);
-                _ratioLongitude = Math.Cos(theta) / GeoPoint.KmPerLongitudeDegree;
-                _ratioLatitude = Math.Sin(theta) / GeoPoint.KmPerLatitudeDegree;
+                _ratioLongitude = Math.Cos(theta);
+                _ratioLatitude = Math.Sin(theta);
 
                 Speed = speed;
                 OriginLocation = originLocation;
@@ -64,8 +64,8 @@ namespace SimulatorClient
         }
         #endregion
 
-        private const double MAX_DISTANCE_FROM_GATEWAY_IN_KM = 50;
-        private const double DEFAULT_SPEED_IN_KM_H = 20;
+        private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.005;
+        private const double DEFAULT_SPEED_IN_GEO = 0.05;
 
         private readonly string _droneId =
             "1.2.22;" + Guid.NewGuid().GetHashCode().ToString("x8");
@@ -80,7 +80,7 @@ namespace SimulatorClient
         {
             _gatewayLocation = gatewayLocation;
             //  Adjust the max speed of the drone
-            _speed = DEFAULT_SPEED_IN_KM_H - _random.NextDouble() * 5;
+            _speed = DEFAULT_SPEED_IN_GEO - _random.NextDouble() * DEFAULT_SPEED_IN_GEO * 0.1;
             //  Dummy data to avoid null value
             _trajectory = new Trajectory(
                 _speed,
@@ -145,8 +145,8 @@ namespace SimulatorClient
             if (radius <= 1)
             {
                 var point = new GeoPoint(
-                    x * MAX_DISTANCE_FROM_GATEWAY_IN_KM / GeoPoint.KmPerLongitudeDegree,
-                    y * MAX_DISTANCE_FROM_GATEWAY_IN_KM / GeoPoint.KmPerLatitudeDegree);
+                    x * MAX_DISTANCE_FROM_GATEWAY_IN_GEO,
+                    y * MAX_DISTANCE_FROM_GATEWAY_IN_GEO);
 
                 return point;
             }

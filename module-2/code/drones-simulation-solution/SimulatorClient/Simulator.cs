@@ -50,7 +50,7 @@ namespace SimulatorClient
             const double START_LONGITUDE = -70.916935;
             const double START_LATITUDE = 46.783386;
 
-            var height = (int)Math.Max(1, Math.Sqrt(_configuration.GatewayCount) / 2);
+            var height = (int)Math.Max(1, Math.Round(Math.Sqrt(_configuration.GatewayCount) / 2));
             var gatewaysEnumerable = from i in Enumerable.Range(0, _configuration.GatewayCount)
                                      let x = i / height
                                      let y = i % height
