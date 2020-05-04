@@ -7,6 +7,8 @@ namespace SimulatorClient
 {
     public class GpsDevice : Device
     {
+        private const int PERIOD_IN_SECONDS = 20;
+
         private readonly Func<GeoPoint> _locationFunction;
 
         public GpsDevice(string droneId, Func<GeoPoint> locationFunction)
@@ -19,7 +21,7 @@ namespace SimulatorClient
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(PERIOD_IN_SECONDS), cancellationToken);
 
                 var location = _locationFunction().ToGeoJsonPoint();
 

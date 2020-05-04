@@ -7,6 +7,8 @@ namespace SimulatorClient
 {
     public class TemperatureDevice : Device
     {
+        private const int PERIOD_IN_SECONDS = 20;
+
         private readonly bool _isExternal;
 
         public TemperatureDevice(string droneId, bool isExternal)
@@ -19,7 +21,7 @@ namespace SimulatorClient
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(PERIOD_IN_SECONDS), cancellationToken);
 
                 OnNewEvent(new DroneEvent
                 {

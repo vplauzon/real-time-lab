@@ -8,7 +8,11 @@ namespace SimulatorClient
 {
     internal class Gateway
     {
+        private const int MIN_PERIOD_IN_SECONDS = 50;
+        private const int MAX_PERIOD_IN_SECONDS = 65;
+
         private readonly string _gatewayId = Guid.NewGuid().GetHashCode().ToString("x8");
+        private readonly Random _random = new Random();
         private readonly GeoPoint _location;
         private volatile IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
 
@@ -51,7 +55,11 @@ namespace SimulatorClient
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(3);
+                var period = TimeSpan.FromSeconds(_random.Next(
+                    MIN_PERIOD_IN_SECONDS,
+                    MAX_PERIOD_IN_SECONDS));
+
+                await Task.Delay(period);
 
                 if (_eventQueue.Any())
                 {
