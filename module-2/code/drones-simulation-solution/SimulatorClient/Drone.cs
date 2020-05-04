@@ -12,9 +12,9 @@ namespace SimulatorClient
 
         public event EventHandler<DroneEvent>? NewEvent;
 
-        public Drone(double gatewayLongitude, double gatewayLatitude)
+        public Drone(GeoPoint gatewayLocation)
         {
-            _gpsDevice = new GpsDevice(_droneId, gatewayLongitude, gatewayLatitude);
+            _gpsDevice = new GpsDevice(_droneId, gatewayLocation);
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)

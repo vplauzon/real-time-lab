@@ -130,6 +130,10 @@
               "image": "vplauzon/drone-simulation:experimental",
               "environmentVariables": [
                 {
+                  "name": "APP_INSIGHTS_KEY",
+                  "value": "ABC"
+                },
+                {
                   "name": "EVENT_HUB_CONN_STRING",
                   "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('Event Hub Namespace'), variables('Telemetry Hub'), variables('Hub Writer')), '2017-04-01').primaryConnectionString]"
                 },

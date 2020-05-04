@@ -85,7 +85,14 @@ Now that we have data ingested in real time, we are going to query it to get ins
 
 Go to [module 4 instructions](module-4).
 
-### Module 5 - Integrate external data
+### Module 5 - Time series
+
+### Module 6 - Imperfect telemetry
+
+*	Changing upstream process to reveal "real" telemetry with late arrivals + duplicates
+* Introduce ASA to the rescue
+
+### Module 7 - Integrate external data
 
 In this module we are going to integrate external data from Azure SQL DB to enrich the ingested data.
 
@@ -94,13 +101,6 @@ In this module we are going to integrate external data from Azure SQL DB to enri
 *	Query some more
 
 Go to [module 5 instructions](module-5).
-
-### Module 6 - Imperfect telemetry
-
-*	Changing upstream process to reveal "real" telemetry with late arrivals + duplicates
-* Introduce ASA to the rescue
-
-### Module 7 - Time series
 
 ### Module 8 - Export to cold storage
 

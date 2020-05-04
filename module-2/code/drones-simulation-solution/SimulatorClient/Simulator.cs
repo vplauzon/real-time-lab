@@ -54,9 +54,10 @@ namespace SimulatorClient
             var gatewaysEnumerable = from i in Enumerable.Range(0, _configuration.GatewayCount)
                                      let x = i / height
                                      let y = i % height
-                                     select new Gateway(
+                                     let location = new GeoPoint(
                                          START_LONGITUDE + x * 0.05,
-                                         START_LATITUDE + x * 0.02 - y * 0.04);
+                                         START_LATITUDE + x * 0.02 - y * 0.04)
+                                     select new Gateway(location);
             var gateways = gatewaysEnumerable.ToImmutableArray();
 
             foreach (var g in gateways)

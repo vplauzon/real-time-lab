@@ -122,3 +122,8 @@ telemetry
 
 telemetry
 | count 
+
+telemetry
+| summarize max(hubEnqueudTime)
+
+.show table telemetry extents 

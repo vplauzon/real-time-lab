@@ -7,14 +7,12 @@ namespace SimulatorClient
 {
     public class GpsDevice : Device
     {
-        private readonly double _gatewayLongitude;
-        private readonly double _gatewayLatitude;
+        private readonly GeoPoint _gatewayLocation;
 
-        public GpsDevice(string droneId, double gatewayLongitude, double gatewayLatitude)
+        public GpsDevice(string droneId, GeoPoint gatewayLocation)
             : base(droneId)
         {
-            _gatewayLongitude = gatewayLongitude;
-            _gatewayLatitude = gatewayLatitude;
+            _gatewayLocation = gatewayLocation;
         }
 
         public async override Task RunAsync(CancellationToken cancellationToken)
@@ -27,15 +25,7 @@ namespace SimulatorClient
                 {
                     DroneId = DroneId,
                     Device = "GPS",
-                    Measurement = new
-                    {
-                        Type = "Point",
-                        Coordinates = new[]
-                        {
-                            _gatewayLongitude,
-                            _gatewayLatitude
-                        }
-                    }
+                    Measurement = _gatewayLocation.ToGeoJsonPoint()
                 });
             }
         }
