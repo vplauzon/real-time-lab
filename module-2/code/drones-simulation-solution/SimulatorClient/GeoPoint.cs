@@ -14,6 +14,10 @@ namespace SimulatorClient
             _latitude = latitude;
         }
 
+        public static double KmPerLongitudeDegree { get; } = 111.32;
+        
+        public static double KmPerLatitudeDegree { get; } = 110.57;
+
         public object ToGeoJsonPoint()
         {
             return new
