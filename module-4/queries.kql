@@ -1,0 +1,7 @@
+telemetry
+| where device == "GPS"
+| where eventTimestamp > ago(30s)
+| sample 2000
+| project longitude, latitude
+| render scatterchart with (kind=map)
+

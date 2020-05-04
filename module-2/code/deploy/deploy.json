@@ -139,11 +139,11 @@
                 },
                 {
                   "name": "GATEWAY_COUNT",
-                  "value": "100"
+                  "value": "10"
                 },
                 {
                   "name": "DRONE_PER_GATEWAY",
-                  "value": "2"
+                  "value": "25"
                 }
               ],
               "resources": {

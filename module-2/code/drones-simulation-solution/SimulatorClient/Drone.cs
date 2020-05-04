@@ -64,7 +64,7 @@ namespace SimulatorClient
         }
         #endregion
 
-        private const double MAX_DISTANCE_FROM_GATEWAY_IN_KM = 15;
+        private const double MAX_DISTANCE_FROM_GATEWAY_IN_KM = 50;
         private const double DEFAULT_SPEED_IN_KM_H = 20;
 
         private readonly string _droneId =
