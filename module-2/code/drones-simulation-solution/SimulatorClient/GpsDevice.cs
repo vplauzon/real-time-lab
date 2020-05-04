@@ -21,11 +21,13 @@ namespace SimulatorClient
             {
                 await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
 
+                var location = _locationFunction().ToGeoJsonPoint();
+
                 OnNewEvent(new DroneEvent
                 {
                     DroneId = DroneId,
                     Device = "GPS",
-                    Measurement = _locationFunction().ToGeoJsonPoint()
+                    Measurement = location
                 });
             }
         }

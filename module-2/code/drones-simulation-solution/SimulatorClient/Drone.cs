@@ -9,37 +9,67 @@ namespace SimulatorClient
     public class Drone
     {
         #region Inner Types
+        /// <summary>
+        /// This implements a s(t) curve, i.e. it returns the coordinate at a given time.
+        /// </summary>
         private class Trajectory
         {
+            private readonly double _ratioLongitude;
+            private readonly double _ratioLatitude;
+            private readonly double _maxDistance;
+
             public Trajectory(
+                double speed,
                 GeoPoint originLocation,
                 GeoPoint destinationLocation,
                 DateTime startTime)
             {
+                var deltaLongitude = destinationLocation.Longitude - originLocation.Latitude;
+                var deltaLatitude = destinationLocation.Latitude - originLocation.Latitude;
+                var theta = Math.Atan2(deltaLatitude, deltaLongitude);
+
+                _maxDistance =
+                    Math.Sqrt(deltaLongitude * deltaLongitude + deltaLatitude * deltaLatitude);
+                _ratioLongitude = Math.Cos(theta) / GeoPoint.KmPerLongitudeDegree;
+                _ratioLatitude = Math.Sin(theta) / GeoPoint.KmPerLatitudeDegree;
+
+                Speed = speed;
                 OriginLocation = originLocation;
                 DestinationLocation = destinationLocation;
                 StartTime = startTime;
+                Duration = TimeSpan.FromHours(_maxDistance / Speed);
             }
+
+            public double Speed { get; }
 
             public GeoPoint OriginLocation { get; }
 
             public GeoPoint DestinationLocation { get; }
 
             public DateTime StartTime { get; }
+            
+            public TimeSpan Duration { get; }
 
             public GeoPoint GetCurrentLocation()
-            {
-                return OriginLocation;
+            {   //  Standardize time in hours, speed in km/h
+                var t = DateTime.Now.Subtract(StartTime).TotalHours;
+                var s = Speed * t;
+                var cappedS = Math.Max(s, _maxDistance);
+                var location = new GeoPoint(_ratioLongitude * s, _ratioLatitude * s);
+
+                return location;
             }
         }
         #endregion
 
-        private const double MAX_DISTANCE_FROM_GATEWAY = 15;
+        private const double MAX_DISTANCE_FROM_GATEWAY_IN_KM = 15;
+        private const double DEFAULT_SPEED_IN_KM_H = 20;
 
         private readonly string _droneId =
             "1.2.22;" + Guid.NewGuid().GetHashCode().ToString("x8");
         private readonly Random _random = new Random();
         private readonly GeoPoint _gatewayLocation;
+        private readonly double _speed;
         private Trajectory _trajectory;
 
         public event EventHandler<DroneEvent>? NewEvent;
@@ -47,8 +77,14 @@ namespace SimulatorClient
         public Drone(GeoPoint gatewayLocation)
         {
             _gatewayLocation = gatewayLocation;
+            //  Adjust the max speed of the drone
+            _speed = DEFAULT_SPEED_IN_KM_H - _random.NextDouble() * 5;
             //  Dummy data to avoid null value
-            _trajectory = new Trajectory(RandomPoint(), RandomPoint(), DateTime.Now);
+            _trajectory = new Trajectory(
+                _speed,
+                RandomPoint(),
+                RandomPoint(),
+                DateTime.Now);
         }
 
         public async Task RunAsync(CancellationToken cancellationToken)
@@ -76,19 +112,24 @@ namespace SimulatorClient
             await Task.WhenAll(deviceTasks.Prepend(moveTask));
         }
 
-        private Task MoveAsync(CancellationToken cancellationToken)
+        private async Task MoveAsync(CancellationToken cancellationToken)
         {
-            _trajectory = new Trajectory(_gatewayLocation, RandomPoint(), DateTime.Now);
+            _trajectory = new Trajectory(
+                _speed,
+                _gatewayLocation,
+                RandomPoint(),
+                DateTime.Now);
 
             while (!cancellationToken.IsCancellationRequested)
             {
+                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
+
                 _trajectory = new Trajectory(
+                    _speed,
                     _trajectory.DestinationLocation,
                     RandomPoint(),
                     DateTime.Now);
             }
-
-            return Task.CompletedTask;
         }
 
         private GeoPoint RandomPoint()
@@ -102,8 +143,8 @@ namespace SimulatorClient
             if (radius <= 1)
             {
                 var point = new GeoPoint(
-                    x * MAX_DISTANCE_FROM_GATEWAY / GeoPoint.KmPerLongitudeDegree,
-                    y * MAX_DISTANCE_FROM_GATEWAY / GeoPoint.KmPerLatitudeDegree);
+                    x * MAX_DISTANCE_FROM_GATEWAY_IN_KM / GeoPoint.KmPerLongitudeDegree,
+                    y * MAX_DISTANCE_FROM_GATEWAY_IN_KM / GeoPoint.KmPerLatitudeDegree);
 
                 return point;
             }
