@@ -47,7 +47,7 @@ namespace SimulatorClient
             public GeoPoint DestinationLocation { get; }
 
             public DateTime StartTime { get; }
-            
+
             public TimeSpan Duration { get; }
 
             public GeoPoint GetCurrentLocation()
@@ -55,7 +55,9 @@ namespace SimulatorClient
                 var t = DateTime.Now.Subtract(StartTime).TotalHours;
                 var s = Speed * t;
                 var cappedS = Math.Max(s, _maxDistance);
-                var location = new GeoPoint(_ratioLongitude * s, _ratioLatitude * s);
+                var location = new GeoPoint(
+                    OriginLocation.Longitude + _ratioLongitude * cappedS,
+                    OriginLocation.Latitude + _ratioLatitude * cappedS);
 
                 return location;
             }
