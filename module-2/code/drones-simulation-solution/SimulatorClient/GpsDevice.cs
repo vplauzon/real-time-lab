@@ -7,12 +7,12 @@ namespace SimulatorClient
 {
     public class GpsDevice : Device
     {
-        private readonly GeoPoint _gatewayLocation;
+        private readonly Func<GeoPoint> _locationFunction;
 
-        public GpsDevice(string droneId, GeoPoint gatewayLocation)
+        public GpsDevice(string droneId, Func<GeoPoint> locationFunction)
             : base(droneId)
         {
-            _gatewayLocation = gatewayLocation;
+            _locationFunction = locationFunction;
         }
 
         public async override Task RunAsync(CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ namespace SimulatorClient
                 {
                     DroneId = DroneId,
                     Device = "GPS",
-                    Measurement = _gatewayLocation.ToGeoJsonPoint()
+                    Measurement = _locationFunction().ToGeoJsonPoint()
                 });
             }
         }
