@@ -30,5 +30,12 @@ namespace SimulatorClient
                 }
             };
         }
+
+        #region object methods
+        public override string ToString()
+        {
+            return $"{{{Longitude}, {Latitude}}}";
+        }
+        #endregion
     }
 }

@@ -7,7 +7,7 @@ namespace SimulatorClient
 {
     public class GpsDevice : Device
     {
-        private const int PERIOD_IN_SECONDS = 20;
+        private const int PERIOD_IN_SECONDS = 5;
 
         private readonly Func<GeoPoint> _locationFunction;
 

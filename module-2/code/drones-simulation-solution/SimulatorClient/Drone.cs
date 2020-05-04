@@ -24,7 +24,7 @@ namespace SimulatorClient
                 GeoPoint destinationLocation,
                 DateTime startTime)
             {
-                var deltaLongitude = destinationLocation.Longitude - originLocation.Latitude;
+                var deltaLongitude = destinationLocation.Longitude - originLocation.Longitude;
                 var deltaLatitude = destinationLocation.Latitude - originLocation.Latitude;
                 var theta = Math.Atan2(deltaLatitude, deltaLongitude);
 
@@ -64,7 +64,7 @@ namespace SimulatorClient
         }
         #endregion
 
-        private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.005;
+        private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.03;
         private const double DEFAULT_SPEED_IN_GEO = 0.05;
 
         private readonly string _droneId =
@@ -145,8 +145,8 @@ namespace SimulatorClient
             if (radius <= 1)
             {
                 var point = new GeoPoint(
-                    x * MAX_DISTANCE_FROM_GATEWAY_IN_GEO,
-                    y * MAX_DISTANCE_FROM_GATEWAY_IN_GEO);
+                    _gatewayLocation.Longitude + x * MAX_DISTANCE_FROM_GATEWAY_IN_GEO,
+                    _gatewayLocation.Latitude + y * MAX_DISTANCE_FROM_GATEWAY_IN_GEO);
 
                 return point;
             }
