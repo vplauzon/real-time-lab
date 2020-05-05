@@ -1,0 +1,12 @@
+//  Compare two drones' internal temperatures
+let sampleDroneIds =
+    telemetry
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | project droneId
+    | sample 2;
+sampleDroneIds
+| join kind=inner telemetry on droneId
+| where device=="internal-temperature"
+| project eventTimestamp, temperature, droneId
+| render timechart 

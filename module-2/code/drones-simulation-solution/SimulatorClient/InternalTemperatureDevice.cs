@@ -11,11 +11,13 @@ namespace SimulatorClient
 
         private readonly Random _random = new Random();
         private readonly double _bias;
+        private readonly double _noiseAmplitude;
 
         public InternalTemperatureDevice(string droneId)
             : base(droneId)
         {
             _bias = (_random.NextDouble() - 0.5) * 0.02;
+            _noiseAmplitude = _random.NextDouble() + 1;
         }
 
         public async override Task RunAsync(CancellationToken cancellationToken)
@@ -28,7 +30,7 @@ namespace SimulatorClient
                 {
                     DroneId = DroneId,
                     Device = "internal-temperature",
-                    Measurement = 46.2 + _bias + (_random.NextDouble() * 1.73)
+                    Measurement = 46.2 + _bias + (_random.NextDouble() * _noiseAmplitude)
                 });
             }
         }

@@ -66,7 +66,6 @@ telemetry
 //  Look at GPS trajectory of sample drones
 let sampleDroneIds = 
     telemetry
-    | where device == "GPS"
     //  Look for drones that have recently pushed telemetry
     | where eventTimestamp > ago(1m)
     | distinct droneId
@@ -82,7 +81,6 @@ sampleDroneIds
 //  Look at the speed of a single sample drone
 let sampleDroneId = toscalar(
     telemetry
-    | where device == "GPS"
     //  Look for drones that have recently pushed telemetry
     | where eventTimestamp > ago(1m)
     | project droneId
@@ -106,7 +104,6 @@ telemetry
 //  Look at the external temperature of a sample drone
 let sampleDroneId = toscalar(
     telemetry
-    | where device == "GPS"
     //  Look for drones that have recently pushed telemetry
     | where eventTimestamp > ago(1m)
     | project droneId
@@ -120,7 +117,6 @@ telemetry
 //  Look at both external & internal temperature of a sample drone
 let sampleDroneId = toscalar(
     telemetry
-    | where device == "GPS"
     //  Look for drones that have recently pushed telemetry
     | where eventTimestamp > ago(1m)
     | project droneId

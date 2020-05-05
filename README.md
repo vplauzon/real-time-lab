@@ -87,6 +87,8 @@ Go to [module 4 instructions](module-4).
 
 ### Module 5 - Time series
 
+Use Kusto's time series' functionalities to detect failure on one of the sensor.
+
 ### Module 6 - Imperfect telemetry
 
 *	Changing upstream process to reveal "real" telemetry with late arrivals + duplicates
