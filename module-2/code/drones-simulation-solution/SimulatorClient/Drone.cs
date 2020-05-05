@@ -72,7 +72,7 @@ namespace SimulatorClient
         #endregion
 
         private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.03;
-        private const double DEFAULT_SPEED_IN_GEO = 0.5;
+        private const double DEFAULT_SPEED_IN_GEO = 0.25;
 
         private readonly Random _random = new Random();
         private readonly string _droneId;
