@@ -17,6 +17,11 @@ telemetry
 | project latency=ingestion_time()-messageTimestamp
 | summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
 
+//  Look at records ingested over time (per minute)
+telemetry
+| summarize count() by bin(ingestion_time(), 1m)
+| render timechart 
+
 //  Look at average period between messages from one gateway
 telemetry
 | distinct gatewayId, messageId, messageTimestamp

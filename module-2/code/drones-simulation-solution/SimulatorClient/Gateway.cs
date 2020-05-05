@@ -8,8 +8,8 @@ namespace SimulatorClient
 {
     internal class Gateway
     {
-        private const int MIN_PERIOD_IN_SECONDS = 5;
-        private const int MAX_PERIOD_IN_SECONDS = 15;
+        private const int MIN_PERIOD_IN_SECONDS = 20;
+        private const int MAX_PERIOD_IN_SECONDS = 40;
 
         private readonly string _gatewayId = Guid.NewGuid().GetHashCode().ToString("x8");
         private readonly Random _random = new Random();
