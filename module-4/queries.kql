@@ -59,7 +59,7 @@ telemetry
 | where droneId == sampleDroneId
 | where device == "GPS"
 //  Limit the amount of data to make the graph lighter
-| where eventTimestamp > ago(20m)
+| sample 300
 | project longitude, latitude, droneId
 | render scatterchart with (kind=map)
 
@@ -75,7 +75,7 @@ sampleDroneIds
 | join kind=inner telemetry on droneId
 | where device == "GPS"
 //  Limit the amount of data to make the graph lighter
-| where eventTimestamp > ago(10m)
+| sample 800
 | project longitude, latitude, droneId
 | render scatterchart with (kind=map)
 
@@ -131,7 +131,21 @@ telemetry
 | project eventTimestamp, temperature, device
 | render timechart
 
-.show ingestion
+
 
 //  Delete all records in telemetry
 .drop extents from telemetry 
+
+.show table  telemetry extents
+| project RowCount, MinCreatedOn, MaxCreatedOn, isDifferent=MinCreatedOn!=MaxCreatedOn
+| order by MinCreatedOn asc, MaxCreatedOn asc
+
+landing
+| count
+
+landingTransformed
+| count 
+
+.show table landingTransformed extents
+| project RowCount, MinCreatedOn, MaxCreatedOn, isDifferent=MinCreatedOn!=MaxCreatedOn
+| order by MinCreatedOn asc, MaxCreatedOn asc
