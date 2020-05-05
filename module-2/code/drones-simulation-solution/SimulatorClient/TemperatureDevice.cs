@@ -9,6 +9,7 @@ namespace SimulatorClient
     {
         private const int PERIOD_IN_SECONDS = 20;
 
+        private readonly Random _random = new Random();
         private readonly bool _isExternal;
 
         public TemperatureDevice(string droneId, bool isExternal)
@@ -27,7 +28,7 @@ namespace SimulatorClient
                 {
                     DroneId = DroneId,
                     Device = _isExternal ? "external-temperature" : "internal-temperature",
-                    Measurement = _isExternal ? 18.2 : 46.2
+                    Measurement = (_isExternal ? 18.2 : 46.2) + (_random.NextDouble() * 0.05)
                 });
             }
         }
