@@ -100,8 +100,8 @@ namespace SimulatorClient
 
         public async Task RunAsync(CancellationToken cancellationToken)
         {
-            var externalTemperatureDevice = new TemperatureDevice(_droneId, true);
-            var internalTemperatureDevice = new TemperatureDevice(_droneId, false);
+            var externalTemperatureDevice = new ExternalTemperatureDevice(_droneId);
+            var internalTemperatureDevice = new InternalTemperatureDevice(_droneId);
             var gpsDevice = new GpsDevice(_droneId, GetCurrentLocation);
             var devices = new Device[]
             {

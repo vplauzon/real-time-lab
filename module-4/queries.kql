@@ -1,7 +1,107 @@
+//  How many records in telemetry?
+//  We should see this increase if we wait for the duration of the batch policy
+telemetry
+| count
+
+//  Let's look at a sample of the telemetry
+telemetry
+| sample 50
+
+//  Let's look at the latency of messages
+telemetry
+| project latency=ingestion_time()-eventTimestamp
+| summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
+
+//  Look at a sample of GPS coordinates
 telemetry
 | where device == "GPS"
-| where eventTimestamp > ago(30s)
-| sample 2000
+| where eventTimestamp > ago(2m)
+| sample 500
 | project longitude, latitude
 | render scatterchart with (kind=map)
 
+//  Look at GPS trajectory of a single sample drone
+let sampleDroneId = toscalar(
+    telemetry
+    | where device == "GPS"
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | project droneId
+    | sample 1);
+telemetry
+| where droneId == sampleDroneId
+| where device == "GPS"
+//  Limit the amount of data to make the graph lighter
+| where eventTimestamp > ago(20m)
+| project longitude, latitude, droneId
+| render scatterchart with (kind=map)
+
+//  Look at GPS trajectory of sample drones
+let sampleDroneIds = 
+    telemetry
+    | where device == "GPS"
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | distinct droneId
+    | sample 5;
+sampleDroneIds
+| join kind=inner telemetry on droneId
+| where device == "GPS"
+//  Limit the amount of data to make the graph lighter
+| where eventTimestamp > ago(10m)
+| project longitude, latitude, droneId
+| render scatterchart with (kind=map)
+
+//  Look at the speed of a single sample drone
+let sampleDroneId = toscalar(
+    telemetry
+    | where device == "GPS"
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | project droneId
+    | sample 1);
+telemetry
+| where droneId == sampleDroneId
+| where device == "GPS"
+//  Order data points by event time
+| order by eventTimestamp asc
+| project longitude, latitude, eventTimestamp
+//  Use the fact the set is ordered to pick previous record
+| extend deltaDistance=geo_distance_2points(longitude, latitude, prev(longitude), prev(latitude))
+| extend deltaTime=eventTimestamp-prev(eventTimestamp)
+| where isnotnull(deltaTime)
+| where deltaTime!=0
+| extend deltaMs = deltaTime/time(1ms)
+| extend speedInKmH = deltaDistance/deltaMs*3600
+| project eventTimestamp, speedInKmH
+| render timechart
+
+//  Look at the external temperature of a sample drone
+let sampleDroneId = toscalar(
+    telemetry
+    | where device == "GPS"
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | project droneId
+    | sample 1);
+telemetry
+| where droneId==sampleDroneId
+| where device=="internal-temperature"
+| project eventTimestamp, temperature
+| render timechart 
+
+//  Look at both external & internal temperature of a sample drone
+let sampleDroneId = toscalar(
+    telemetry
+    | where device == "GPS"
+    //  Look for drones that have recently pushed telemetry
+    | where eventTimestamp > ago(1m)
+    | project droneId
+    | sample 1);
+telemetry
+| where droneId==sampleDroneId
+| where device=="internal-temperature" or device=="external-temperature"
+| project eventTimestamp, temperature, device
+| render timechart 
+
+.drop extents from telemetry 

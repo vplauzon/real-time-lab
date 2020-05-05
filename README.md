@@ -79,8 +79,8 @@ Go to [module 3 instructions](module-3).
 
 Now that we have data ingested in real time, we are going to query it to get insights.
 
+*   Compute ingestion latency
 *   Query and chart data
-*   Compute data latency
 *   Look at Azure Data Explorer metrics (monitoring)
 
 Go to [module 4 instructions](module-4).
@@ -99,13 +99,15 @@ In this module we are going to integrate external data from Azure SQL DB to enri
 *	Ingest a couple of reference data tables (or reference?)
 *	Author update policies to transform the data using reference tables
 *	Query some more
+*	Setup continuous exporting
 
 Go to [module 5 instructions](module-5).
 
-### Module 8 - Export to cold storage
-
-*	Setup continuous exporting
-
-### Module 9 - Reporting
+### Module 8 - Reporting
 
 *	Setup Power BI to query near real time data
+
+### Module 9 - Monitoring
+
+*	...
+
