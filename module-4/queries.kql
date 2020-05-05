@@ -7,10 +7,32 @@ telemetry
 telemetry
 | sample 50
 
+//  Let's look at the latency of messages versus events
+telemetry
+| project latency=messageTimestamp-eventTimestamp
+| summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
+
 //  Let's look at the latency of messages
 telemetry
-| project latency=ingestion_time()-eventTimestamp
+| project latency=ingestion_time()-messageTimestamp
 | summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
+
+//  Look at average period between messages from one gateway
+telemetry
+| distinct gatewayId, messageId, messageTimestamp
+| order by gatewayId, messageTimestamp asc
+| extend delta=iif(gatewayId==prev(gatewayId), messageTimestamp-prev(messageTimestamp), timespan(null))
+| where isnotnull(delta)
+| summarize avg(delta)
+
+//  Look at average period between events from one device on a drone
+telemetry
+| distinct droneId, device, eventTimestamp
+| order by droneId, device, eventTimestamp asc
+| extend delta=iif(droneId==prev(droneId) and device==prev(device), eventTimestamp-prev(eventTimestamp), timespan(null))
+| where isnotnull(delta)
+| summarize avg(delta) by device
+
 
 //  Look at a sample of GPS coordinates
 telemetry
@@ -102,6 +124,9 @@ telemetry
 | where droneId==sampleDroneId
 | where device=="internal-temperature" or device=="external-temperature"
 | project eventTimestamp, temperature, device
-| render timechart 
+| render timechart
 
+.show ingestion
+
+//  Delete all records in telemetry
 .drop extents from telemetry 
