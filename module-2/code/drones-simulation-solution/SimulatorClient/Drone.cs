@@ -10,13 +10,12 @@ namespace SimulatorClient
     {
         #region Inner Types
         /// <summary>
-        /// This implements a s(t) curve, i.e. it returns the coordinate at a given time.
+        /// This implements a s(t)=v.t curve, i.e. it returns the coordinate at a given time.
         /// </summary>
         private class Trajectory
         {
             private readonly double _ratioLongitude;
             private readonly double _ratioLatitude;
-            private readonly double _maxDistance;
 
             public Trajectory(
                 double speed,
@@ -27,9 +26,9 @@ namespace SimulatorClient
                 var deltaLongitude = destinationLocation.Longitude - originLocation.Longitude;
                 var deltaLatitude = destinationLocation.Latitude - originLocation.Latitude;
                 var theta = Math.Atan2(deltaLatitude, deltaLongitude);
-
-                _maxDistance =
+                var maxDistance =
                     Math.Sqrt(deltaLongitude * deltaLongitude + deltaLatitude * deltaLatitude);
+
                 _ratioLongitude = Math.Cos(theta);
                 _ratioLatitude = Math.Sin(theta);
 
@@ -37,7 +36,7 @@ namespace SimulatorClient
                 OriginLocation = originLocation;
                 DestinationLocation = destinationLocation;
                 StartTime = startTime;
-                Duration = TimeSpan.FromHours(_maxDistance / Speed);
+                Duration = TimeSpan.FromHours(maxDistance / Speed);
             }
 
             public double Speed { get; }
@@ -52,14 +51,22 @@ namespace SimulatorClient
 
             public GeoPoint GetCurrentLocation()
             {   //  Standardize time in hours, speed in km/h
-                var t = DateTime.Now.Subtract(StartTime).TotalHours;
-                var s = Speed * t;
-                var cappedS = Math.Max(s, _maxDistance);
-                var location = new GeoPoint(
-                    OriginLocation.Longitude + _ratioLongitude * cappedS,
-                    OriginLocation.Latitude + _ratioLatitude * cappedS);
+                var t = DateTime.Now.Subtract(StartTime);
 
-                return location;
+                if (t < Duration)
+                {   //  Drone is in trajectory
+                    var th = t.TotalHours;
+                    var s = Speed * th;
+                    var location = new GeoPoint(
+                        OriginLocation.Longitude + _ratioLongitude * s,
+                        OriginLocation.Latitude + _ratioLatitude * s);
+
+                    return location;
+                }
+                else
+                {   //  Drone is hovering
+                    return DestinationLocation;
+                }
             }
         }
         #endregion
@@ -116,21 +123,19 @@ namespace SimulatorClient
 
         private async Task MoveAsync(CancellationToken cancellationToken)
         {
-            _trajectory = new Trajectory(
-                _speed,
-                _gatewayLocation,
-                RandomPoint(),
-                DateTime.Now);
-
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
-
                 _trajectory = new Trajectory(
                     _speed,
                     _trajectory.DestinationLocation,
                     RandomPoint(),
                     DateTime.Now);
+
+                //  Let the drone hover for a while after trajectory
+                var duration = _trajectory.Duration
+                    + (_random.NextDouble() * 0.1 + 0.1) * _trajectory.Duration;
+
+                await Task.Delay(duration, cancellationToken);
             }
         }
 

@@ -5,8 +5,8 @@
       "environmentVariables": {
         "APP_INSIGHTS_KEY": "504e4811-e352-45c2-8568-b5ad30993b23",
         "EVENT_HUB_CONN_STRING": "Endpoint=sb://event-hub-5xtl4ygnzei2c.servicebus.windows.net/;SharedAccessKeyName=hub-writer;SharedAccessKey=tk4RTmypLl2FadUkOJhZ4lfavFLQ+TrlQo6kdfw69Us=;EntityPath=telemetry",
-        "GATEWAY_COUNT": "2",
-        "DRONE_PER_GATEWAY": "25"
+        "GATEWAY_COUNT": "1",
+        "DRONE_PER_GATEWAY": "1"
       }
     }
   }
