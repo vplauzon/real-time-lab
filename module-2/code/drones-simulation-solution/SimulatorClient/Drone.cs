@@ -135,7 +135,7 @@ namespace SimulatorClient
 
                 //  Let the drone hover for a while after trajectory
                 var duration = _trajectory.Duration
-                    + (_random.NextDouble() * 0.1 + 0.1) * _trajectory.Duration;
+                    + (_random.NextDouble() * 0.2 + 0.2) * _trajectory.Duration;
 
                 await Task.Delay(duration, cancellationToken);
             }
