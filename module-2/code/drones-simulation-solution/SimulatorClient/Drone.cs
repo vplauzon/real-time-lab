@@ -74,9 +74,8 @@ namespace SimulatorClient
         private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.03;
         private const double DEFAULT_SPEED_IN_GEO = 0.5;
 
-        private readonly string _droneId =
-            "1.2.22;" + Guid.NewGuid().GetHashCode().ToString("x8");
         private readonly Random _random = new Random();
+        private readonly string _droneId;
         private readonly GeoPoint _gatewayLocation;
         private readonly double _speed;
         private Trajectory _trajectory;
@@ -85,6 +84,9 @@ namespace SimulatorClient
 
         public Drone(GeoPoint gatewayLocation)
         {
+            var softwareVersion = $"1.2.{_random.Next(19, 22)}";
+            
+            _droneId = $"{softwareVersion};" + Guid.NewGuid().GetHashCode().ToString("x8");
             _gatewayLocation = gatewayLocation;
             //  Adjust the max speed of the drone
             _speed = DEFAULT_SPEED_IN_GEO - _random.NextDouble() * DEFAULT_SPEED_IN_GEO * 0.1;
