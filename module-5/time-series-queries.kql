@@ -1,12 +1,32 @@
-//  Compare two drones' internal temperatures
+//  Compare a few drones' internal temperatures
+//  It seems to be mostly noise ; hard to analyse the difference
 let sampleDroneIds =
     telemetry
     //  Look for drones that have recently pushed telemetry
     | where eventTimestamp > ago(1m)
     | project droneId
-    | sample 2;
+    | sample 3;
 sampleDroneIds
 | join kind=inner telemetry on droneId
 | where device=="internal-temperature"
-| project eventTimestamp, temperature, droneId
+| project eventTimestamp, temperature, droneId, device
 | render timechart 
+
+//  Find drones where the internal temperature device snapped
+//  First, let's find the drones that had a GPS telemetry in the last 20 minutes
+let gps =
+    telemetry
+    | where device=="internal-temperature"
+    | where eventTimestamp > ago(20m)
+    | distinct droneId;
+//  Second, let's find the drones that had an internal temperature telemetry in
+//  the last 2 minutes
+let internalTemperature =
+    telemetry
+    | where device=="internal-temperature"
+    | where eventTimestamp > ago(2m)
+    | distinct droneId;
+//  Now, let's find the drones having GPS but no internal temperature
+gps
+| join kind=leftanti internalTemperature on droneId
+| count

@@ -7,6 +7,13 @@ namespace SimulatorClient
 {
     public class InternalTemperatureDevice : Device
     {
+        const double TEMPERATURE_BASE = 46.2;
+        const double BIAS_SCALE = 1.4;
+        const double NOISE_MIN_SCALE = 0.1;
+        const double NOISE_MAX_SCALE = 0.3;
+        const double SNAP_BIAS_INCREMENT_SCALE = -0.003;
+        const double SNAP_BIAS_THRESHOLD = 0.08;
+
         private readonly Random _random = new Random();
         private readonly double _bias;
         private readonly double _noiseAmplitude;
@@ -14,8 +21,9 @@ namespace SimulatorClient
         public InternalTemperatureDevice(string droneId)
             : base(droneId)
         {
-            _bias = (_random.NextDouble() - 0.5) * 0.02;
-            _noiseAmplitude = _random.NextDouble() + 1;
+            _bias = (_random.NextDouble() - 0.5) * BIAS_SCALE;
+            _noiseAmplitude = NOISE_MIN_SCALE
+                + _random.NextDouble() * (NOISE_MAX_SCALE - NOISE_MIN_SCALE);
         }
 
         public async override Task RunAsync(CancellationToken cancellationToken)
@@ -36,9 +44,9 @@ namespace SimulatorClient
                 //  If it is snapping, a negative bias will build up until it snaps
                 if (isSnapping)
                 {
-                    snappingBias -= _random.NextDouble() * 0.002;
+                    snappingBias += _random.NextDouble() * SNAP_BIAS_INCREMENT_SCALE;
 
-                    if (snappingBias < -0.03)
+                    if (snappingBias < SNAP_BIAS_THRESHOLD)
                     {   //  The device snaps and is out-of-order
                         return;
                     }
@@ -48,7 +56,7 @@ namespace SimulatorClient
                 {
                     DroneId = DroneId,
                     Device = "internal-temperature",
-                    Measurement = 46.2
+                    Measurement = TEMPERATURE_BASE
                     + _bias
                     + snappingBias
                     + (_random.NextDouble() * _noiseAmplitude)
