@@ -14,13 +14,15 @@ namespace SimulatorClient
         private readonly string _gatewayId = Guid.NewGuid().GetHashCode().ToString("x8");
         private readonly Random _random = new Random();
         private readonly GeoPoint _location;
+        private readonly double _snapInternalTemperatureLikelihood;
         private volatile IImmutableQueue<DroneEvent> _eventQueue = ImmutableQueue<DroneEvent>.Empty;
 
         public event EventHandler<GatewayMessage>? NewMessage;
 
-        public Gateway(GeoPoint location)
+        public Gateway(GeoPoint location, double snapInternalTemperatureLikelihood)
         {
             _location = location;
+            _snapInternalTemperatureLikelihood = snapInternalTemperatureLikelihood;
         }
 
         public async Task RunAsync(int droneCount, CancellationToken cancellationToken)
@@ -36,7 +38,9 @@ namespace SimulatorClient
         private IImmutableList<Drone> CreateDrones(int droneCount, CancellationToken cancellationToken)
         {
             var dronesEnumerable = from i in Enumerable.Range(0, droneCount)
-                                   select new Drone(_location);
+                                   select new Drone(
+                                       _location,
+                                       _snapInternalTemperatureLikelihood);
             var drones = dronesEnumerable.ToImmutableArray();
 
             foreach (var d in drones)

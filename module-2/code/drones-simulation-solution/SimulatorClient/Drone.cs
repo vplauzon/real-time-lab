@@ -74,6 +74,7 @@ namespace SimulatorClient
         private const double MAX_DISTANCE_FROM_GATEWAY_IN_GEO = 0.03;
         private const double DEFAULT_SPEED_IN_GEO = 0.25;
 
+        private readonly double _snapInternalTemperatureLikelihood;
         private readonly Random _random = new Random();
         private readonly string _droneId;
         private readonly GeoPoint _gatewayLocation;
@@ -82,10 +83,11 @@ namespace SimulatorClient
 
         public event EventHandler<DroneEvent>? NewEvent;
 
-        public Drone(GeoPoint gatewayLocation)
+        public Drone(GeoPoint gatewayLocation, double snapInternalTemperatureLikelihood)
         {
             var softwareVersion = $"1.2.{_random.Next(19, 22)}";
             
+            _snapInternalTemperatureLikelihood = snapInternalTemperatureLikelihood;
             _droneId = $"{softwareVersion};" + Guid.NewGuid().GetHashCode().ToString("x8");
             _gatewayLocation = gatewayLocation;
             //  Adjust the max speed of the drone
@@ -101,7 +103,9 @@ namespace SimulatorClient
         public async Task RunAsync(CancellationToken cancellationToken)
         {
             var externalTemperatureDevice = new ExternalTemperatureDevice(_droneId);
-            var internalTemperatureDevice = new InternalTemperatureDevice(_droneId);
+            var internalTemperatureDevice = new InternalTemperatureDevice(
+                _droneId,
+                _snapInternalTemperatureLikelihood);
             var gpsDevice = new GpsDevice(_droneId, GetCurrentLocation);
             var devices = new Device[]
             {

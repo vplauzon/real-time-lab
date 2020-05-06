@@ -7,6 +7,7 @@ namespace SimulatorClient
 {
     public class InternalTemperatureDevice : Device
     {
+        const int PERIOD_IN_SECONDS = 20;
         const double TEMPERATURE_BASE = 46.2;
         const double BIAS_SCALE = 1.4;
         const double NOISE_MIN_SCALE = 0.1;
@@ -14,13 +15,15 @@ namespace SimulatorClient
         const double SNAP_BIAS_INCREMENT_SCALE = -0.003;
         const double SNAP_BIAS_THRESHOLD = 0.08;
 
+        private readonly double _snapInternalTemperatureLikelihood;
         private readonly Random _random = new Random();
         private readonly double _bias;
         private readonly double _noiseAmplitude;
 
-        public InternalTemperatureDevice(string droneId)
+        public InternalTemperatureDevice(string droneId, double snapInternalTemperatureLikelihood)
             : base(droneId)
         {
+            _snapInternalTemperatureLikelihood = snapInternalTemperatureLikelihood;
             _bias = (_random.NextDouble() - 0.5) * BIAS_SCALE;
             _noiseAmplitude = NOISE_MIN_SCALE
                 + _random.NextDouble() * (NOISE_MAX_SCALE - NOISE_MIN_SCALE);
@@ -28,9 +31,6 @@ namespace SimulatorClient
 
         public async override Task RunAsync(CancellationToken cancellationToken)
         {
-            const int PERIOD_IN_SECONDS = 20;
-            const double SNAP_LIKELIHOOD_PER_PERIOD = 0.03;
-
             var isSnapping = false;
             var snappingBias = (double)0;
 
@@ -40,7 +40,7 @@ namespace SimulatorClient
 
                 //  Trial if the device starts to snap
                 isSnapping = isSnapping
-                    || _random.NextDouble() < SNAP_LIKELIHOOD_PER_PERIOD;
+                    || _random.NextDouble() < _snapInternalTemperatureLikelihood;
                 //  If it is snapping, a negative bias will build up until it snaps
                 if (isSnapping)
                 {

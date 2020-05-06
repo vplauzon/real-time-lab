@@ -57,7 +57,9 @@ namespace SimulatorClient
                                      let location = new GeoPoint(
                                          START_LONGITUDE + x * 0.05,
                                          START_LATITUDE + x * 0.02 - y * 0.04)
-                                     select new Gateway(location);
+                                     select new Gateway(
+                                         location,
+                                         _configuration.SnapInternalTemperatureLikelihood);
             var gateways = gatewaysEnumerable.ToImmutableArray();
 
             foreach (var g in gateways)
