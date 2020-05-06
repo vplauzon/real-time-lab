@@ -21,7 +21,7 @@ namespace SimulatorClient
         public async override Task RunAsync(CancellationToken cancellationToken)
         {
             const int PERIOD_IN_SECONDS = 20;
-            const double SNAP_LIKELIHOOD_PER_PERIOD = 0.3;
+            const double SNAP_LIKELIHOOD_PER_PERIOD = 0.03;
 
             var isSnapping = false;
             var snappingBias = (double)0;
