@@ -32,13 +32,13 @@ namespace SimulatorClient
 
                 //  Trial if the device starts to snap
                 isSnapping = isSnapping
-                    || _random.NextDouble() >= SNAP_LIKELIHOOD_PER_PERIOD;
+                    || _random.NextDouble() < SNAP_LIKELIHOOD_PER_PERIOD;
                 //  If it is snapping, a negative bias will build up until it snaps
                 if (isSnapping)
                 {
-                    snappingBias -= _random.NextDouble() * 0.005;
+                    snappingBias -= _random.NextDouble() * 0.002;
 
-                    if (snappingBias > 0.02)
+                    if (snappingBias < -0.03)
                     {   //  The device snaps and is out-of-order
                         return;
                     }
