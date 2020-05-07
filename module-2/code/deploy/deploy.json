@@ -147,7 +147,7 @@
                 },
                 {
                   "name": "SNAP_INTERNAL_TEMPERATURE_LIKELIHOOD",
-                  "value": "0.005"
+                  "value": "0.001"
                 }
               ],
               "resources": {

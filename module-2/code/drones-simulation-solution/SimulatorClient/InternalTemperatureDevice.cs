@@ -12,8 +12,8 @@ namespace SimulatorClient
         const double BIAS_SCALE = 1.4;
         const double NOISE_MIN_SCALE = 0.1;
         const double NOISE_MAX_SCALE = 0.3;
-        const double SNAP_BIAS_INCREMENT_SCALE = 0.01;
-        const double SNAP_BIAS_THRESHOLD = 0.12;
+        const double SNAP_BIAS_INCREMENT_SCALE = 0.007;
+        const double SNAP_BIAS_THRESHOLD = 0.06;
 
         private readonly double _snapInternalTemperatureLikelihood;
         private readonly Random _random = new Random();
