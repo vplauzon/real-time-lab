@@ -12,8 +12,8 @@ namespace SimulatorClient
         const double BIAS_SCALE = 1.4;
         const double NOISE_MIN_SCALE = 0.1;
         const double NOISE_MAX_SCALE = 0.3;
-        const double SNAP_BIAS_INCREMENT_SCALE = -0.003;
-        const double SNAP_BIAS_THRESHOLD = 0.08;
+        const double SNAP_BIAS_INCREMENT_SCALE = 0.01;
+        const double SNAP_BIAS_THRESHOLD = 0.12;
 
         private readonly double _snapInternalTemperatureLikelihood;
         private readonly Random _random = new Random();
@@ -46,7 +46,7 @@ namespace SimulatorClient
                 {
                     snappingBias += _random.NextDouble() * SNAP_BIAS_INCREMENT_SCALE;
 
-                    if (snappingBias < SNAP_BIAS_THRESHOLD)
+                    if (snappingBias > SNAP_BIAS_THRESHOLD)
                     {   //  The device snaps and is out-of-order
                         return;
                     }
@@ -58,7 +58,7 @@ namespace SimulatorClient
                     Device = "internal-temperature",
                     Measurement = TEMPERATURE_BASE
                     + _bias
-                    + snappingBias
+                    - snappingBias
                     + (_random.NextDouble() * _noiseAmplitude)
                 });
             }

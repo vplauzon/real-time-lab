@@ -144,6 +144,10 @@
                 {
                   "name": "DRONE_PER_GATEWAY",
                   "value": "50"
+                },
+                {
+                  "name": "SNAP_INTERNAL_TEMPERATURE_LIKELIHOOD",
+                  "value": "0.005"
                 }
               ],
               "resources": {
