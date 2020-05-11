@@ -13,11 +13,11 @@ sampleDroneIds
 | render timechart 
 
 //  Find drones where the internal temperature device snapped
-//  First, let's find the drones that had a GPS telemetry in the last 20 minutes
+//  First, let's find the drones that had a GPS telemetry in the last 30 minutes
 let gps =
     telemetry
     | where device=="internal-temperature"
-    | where eventTimestamp > ago(20m)
+    | where eventTimestamp > ago(30m)
     | distinct droneId;
 //  Second, let's find the drones that had an internal temperature telemetry in
 //  the last 2 minutes
@@ -29,4 +29,118 @@ let internalTemperature =
 //  Now, let's find the drones having GPS but no internal temperature
 gps
 | join kind=leftanti internalTemperature on droneId
-| count
+
+//  Pick one of the drone-id that has snapped and lets look at its profile
+//  It is hard to notice anything on the curve
+let snappedDroneId="cbf5f6bc";
+telemetry
+| where droneId == snappedDroneId
+| where device=="internal-temperature"
+| project eventTimestamp, temperature
+| render timechart 
+
+//  While still using the same drone-id, let's look at the linear fit and 2 segment linear fit
+//  We notice the slope is negative and the 2 segments have a drop in slope
+let snappedDroneId="cbf5f6bc";
+let droneTelemetry = telemetry
+    | where droneId == snappedDroneId
+    | where device=="internal-temperature";
+//  We need the time range to create a series
+let minTime = toscalar(droneTelemetry
+    | summarize min(eventTimestamp));
+let maxTime = toscalar(droneTelemetry
+    | summarize max(eventTimestamp));
+droneTelemetry
+//  First we create a series out of the temperature
+| make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime, 1m) by droneId
+//  Then, we create a linear fit
+| extend (RSquare,Slope,Variance,RVariance,Interception,LineFit)=series_fit_line(temperature)
+//  Then, a 2 segments linear fit
+| extend (RSquare2, SplitIdx, Variance2,RVariance2,LineFit2)=series_fit_2lines(temperature)
+//  Finally, we project and plot to compare
+| project temperature, eventTimestamp, LineFit, LineFit2
+| render timechart
+
+//  Is the slope of a linear fit a good predictor?
+//  Let's try it on all drones and pick the ones with the most negative slope
+let minTime = toscalar(telemetry
+    | summarize min(eventTimestamp));
+let maxTime = toscalar(telemetry
+    | summarize max(eventTimestamp));
+telemetry
+| where device=="internal-temperature"
+| make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime, 1m) by droneId
+| extend filledTemperature=series_fill_linear(temperature, double(null), true)
+| extend (RSquare,Slope,Variance,RVariance,Interception,LineFit)=series_fit_line(filledTemperature)
+//  Take the smallest (most negative) slopes
+| order by Slope asc
+| project eventTimestamp, filledTemperature, LineFit, droneId
+//  Pick the first 10
+| limit 10
+| render timechart
+
+//  Linear fit definitely predicts the worse cases well
+//  Let's look at how it does in general
+//  First, let's find the drones that didn't snapped yet
+let working =
+    telemetry
+    | where device=="internal-temperature"
+    | where eventTimestamp > ago(2m)
+    | distinct droneId;
+let minTime = toscalar(telemetry
+    | summarize min(eventTimestamp));
+let maxTime = toscalar(telemetry
+    | summarize max(eventTimestamp));
+telemetry
+| where device=="internal-temperature"
+//  Let's remove the last 10 minutes ; if some drones have started to snap but haven't yet, we won't pick those telemetry
+| make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime-5m, 1m) by droneId
+| extend filledTemperature=series_fill_linear(temperature, double(null), true)
+| extend (RSquare,Slope,Variance,RVariance,Interception,LineFit)=series_fit_line(filledTemperature)
+//  Use the left outer join to state of the drone has snapped or not
+| join kind=leftouter working on droneId
+//  Put the snapped vs non-snapped on different integer values
+| project Slope, hasSnapped=iif(droneId1=="", 0, 1)
+| render scatterchart
+
+let working =
+    telemetry
+    | where device=="internal-temperature"
+    | where eventTimestamp > ago(2m)
+    | distinct droneId;
+let minTime = toscalar(telemetry
+    | summarize min(eventTimestamp));
+let maxTime = toscalar(telemetry
+    | summarize max(eventTimestamp));
+telemetry
+| where device=="internal-temperature"
+//  Let's remove the last 10 minutes ; if some drones have started to snap but haven't yet, we won't pick those telemetry
+| make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime-5m, 1m) by droneId
+| extend filledTemperature=series_fill_linear(temperature, double(null), true)
+| extend (RSquare2, SplitIdx, Variance2,RVariance2,LineFit2, RightRSquare2, RightSlope2)=series_fit_2lines(filledTemperature)
+//  Use the left outer join to state of the drone has snapped or not
+| join kind=leftouter working on droneId
+//  Put the snapped vs non-snapped on different integer values
+| project RightSlope2, hasSnapped=iif(droneId1=="", 0, 1)
+| render scatterchart
+
+let working =
+    telemetry
+    | where device=="internal-temperature"
+    | where eventTimestamp > ago(2m)
+    | distinct droneId;
+let minTime = toscalar(telemetry
+    | summarize min(eventTimestamp));
+let maxTime = toscalar(telemetry
+    | summarize max(eventTimestamp));
+telemetry
+| where device=="internal-temperature"
+//  Let's remove the last 10 minutes ; if some drones have started to snap but haven't yet, we won't pick those telemetry
+| make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime-5m, 1m) by droneId
+| extend filledTemperature=series_fill_linear(temperature, double(null), true)
+| extend (RSquare2, SplitIdx, Variance2,RVariance2,LineFit2, RightRSquare2, RightSlope2, RightInterception, RightVariance, RightRVariance, LeftRSquare, LeftSlope)=series_fit_2lines(filledTemperature)
+//  Use the left outer join to state of the drone has snapped or not
+| join kind=leftouter working on droneId
+//  Put the snapped vs non-snapped on different integer values
+| project LeftSlope-RightSlope2, hasSnapped=iif(droneId1=="", 0, 1)
+| render scatterchart
