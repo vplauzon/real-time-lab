@@ -1,3 +1,5 @@
+# Module 4 - Querying real time data
+
 *	Attendees query the data as it get ingested into the cluster
 *   Different query challenges
     *   Detect duplicates
