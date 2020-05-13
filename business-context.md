@@ -8,7 +8,7 @@ They recently scaled up the size of the fleet and have had operational challenge
 
 ![current solution](current-solution.png)
 
-## Target state
+## Business requirements
 
 Contoso wants to explore new ways of analysing data and see what benefits those could bring.  They want to reuse their IoT assets but change the data analysis stack to a Azure-based solution.
 
