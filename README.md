@@ -23,7 +23,7 @@ Getting familiar with Kusto, Azure Data Explorer query language.  We suggest the
 
 Follow [this link](business-context.md) for the business scenario for the hands on lab.
 
-Break into teams of 3 to 8 to design the solution.
+Break into teams of 3 to 8 individuals to design the solution.
 
 The solution should address each of the business requirements from the previous section.  Draw a diagram with the main components.
 

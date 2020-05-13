@@ -12,8 +12,8 @@ They want to explore new ways of analysing the data and see what benefit those c
 1.   Monitoring:  they need to monitor the platform (e.g. CPU usage)
 1.   Real Time:  they want the data to be available for analysis in less than one minute latency
 1.   Ad Hoc queries:  they want the platform to be able to perform exploratory query without shaping the data (e.g. designing indexes) in a special way for the queries
-1.   Visualization:  they do not want the platform to only deal with data to be visualize with other tools ; they would like for the platform to allow visualization as close to the querying tool as possible
-1.   Ability to deal with duplicates, late duplicates and late arrival data:  the telemetry delivery to IoT Hub isn't always perfect and the platform must be able to deal with those elements
+1.   Visualization:  they do not want the platform to only deal with data to be visualized with other tools ; they would like for the platform to allow visualization as close to the querying tool as possible
+1.   Ability to deal with duplicates, late duplicates and late arrival data:  the communication between the drones and the field gateway and the field gateway and the IoT Hub isn't always possible and the platform must be able to deal with those elements
 1.   Time series:  a lot of analysis they want to perform is based on time series of different measurements ; the platform must be able to do those as natively as possible
 1.   Export to data lake:  their data science will still need the data for long-term analysis in the data lake (Azure Data Lake Storage gen 2)
 1.   Reporting:  different stakeholders in the company must be able to look at dashboards for a summary look at the fleet
