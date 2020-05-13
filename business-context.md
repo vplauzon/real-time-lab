@@ -2,9 +2,11 @@
 
 Contonso Corporation operates a fleet of agricultural drones used for surveilling crops and monitor the environment.
 
-They recently scaled up the size of the fleet and have had operational challenges since.  For instance, they lose drones in the fields while some are malfunctioning.  In general, they have a hard time analysing the telemetry they are capturing using their current Hadoop-based stack.  The data is piling up and they can't get value out of the data in a timely fashion.  Their Data Science unit have developped some models but they can't use it in real time.
+They recently scaled up the size of the fleet and have had operational challenges since.  For instance, they lose drones in the fields while some are malfunctioning.  In general, they have a hard time analysing the telemetry they are capturing using their current Hadoop-based stack.  The data is piling up and they can't get value out of the data in a timely fashion.  Their Data Science unit have developped some models but they can't use them in real time.
 
-They want to explore new ways of analysing the data and see what benefit those could bring.  They want to reuse their IoT solution based on Azure IoT Hub but change the data analysis stack to a Azure-based solution.  They have the following requirements:
+![current solution](current-solution.png)
+
+They want to explore new ways of analysing data and see what benefit those could bring.  They want to reuse their IoT solution based on Azure IoT Hub but change the data analysis stack to a Azure-based solution.  They have the following requirements:
 
 1.   Focus on the non-video device telemetry (e.g. temperature, pressure, GPS position, etc.)
 1.   Managed solution:  they do not want to manage VMs
