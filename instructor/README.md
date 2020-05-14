@@ -25,3 +25,9 @@ This can be done individually or in teams.
 The lab is divided into modules.  We recommend "regrouping" at the end of each module to discuss the solution and if necessary, show a working version.
 
 We recommend doing module 1 to 4 as a baseline and considering the other modules in order of interest.
+
+### IoT Events simulation
+
+In order to simulate the IoT events, it is suggested the instructor setup an Azure Container Instance and an Event Hub as described in module 2.
+
+This will allow attendees to be free of thinking about this simulation details.
