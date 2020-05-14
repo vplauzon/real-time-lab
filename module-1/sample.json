@@ -1,23 +1,100 @@
-{
-    "gatewayId": "4b8fg",
-    "messageId": "<GUID>",
-    "messageTimestamp": "...",
-    "events": [
-        {
-            "droneId": "1.2.23;5f12c",
-            "eventTimestamp": "...",
-            "device": "gps",
-            "telemetry": {
-                "position": "..."
+[
+    {
+        "x-opt-sequence-number": 6231,
+        "x-opt-enqueued-time": "2020-05-14T17:09:06.0310000Z",
+        "messageTimestamp": "2020-05-14T17:09:06.0188392Z",
+        "x-opt-offset": "30077767056",
+        "gatewayId": "179e29cb",
+        "messageId": "8959d98e-7d0f-4b17-9cd9-9d2ee34ba1b7",
+        "events": [
+            {
+                "eventTimestamp": "2020-05-14T17:08:37.1554152Z",
+                "measurement": {
+                    "coordinates": [
+                        "-70.776509345465143",
+                        "46.826326824971233"
+                    ],
+                    "type": "Point"
+                },
+                "droneId": "1.2.21;a70ca461",
+                "device": "GPS"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:39.9151463Z",
+                "measurement": {
+                    "coordinates": [
+                        "-70.7729063607642",
+                        "46.851425905904314"
+                    ],
+                    "type": "Point"
+                },
+                "droneId": "1.2.19;40110cc2",
+                "device": "GPS"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:48.0100673Z",
+                "measurement": "45.718312718447933",
+                "droneId": "1.2.19;6460dae6",
+                "device": "internal-temperature"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:48.0100697Z",
+                "measurement": "46.325914126748579",
+                "droneId": "1.2.20;64f1b7b5",
+                "device": "internal-temperature"
             }
-        },
-        {
-            "droneId": "1.2.22;6b45b",
-            "eventTimestamp": "...",
-            "device": "exteriorTemperature",
-            "telemetry": {
-                "exteriorTemperature": 20.3
+        ]
+    },
+    {
+        "x-opt-sequence-number": 6230,
+        "x-opt-enqueued-time": "2020-05-14T17:09:05.0780000Z",
+        "messageTimestamp": "2020-05-14T17:09:05.0670422Z",
+        "x-opt-offset": "30079282320",
+        "gatewayId": "ae75c48a",
+        "messageId": "3760d76e-7d53-4ea5-a331-875c27a5f527",
+        "events": [
+            {
+                "eventTimestamp": "2020-05-14T17:08:42.1159028Z",
+                "measurement": {
+                    "coordinates": [
+                        "-70.514198199896143",
+                        "46.939603486320728"
+                    ],
+                    "type": "Point"
+                },
+                "droneId": "1.2.19;df12e8f6",
+                "device": "GPS"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:42.3204442Z",
+                "measurement": {
+                    "coordinates": [
+                        "-70.522095868648279",
+                        "46.932906012871825"
+                    ],
+                    "type": "Point"
+                },
+                "droneId": "1.2.20;ccd957c8",
+                "device": "GPS"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:48.0433290Z",
+                "measurement": "45.988745098186243",
+                "droneId": "1.2.20;abb2fb5e",
+                "device": "internal-temperature"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:48.0433317Z",
+                "measurement": "46.182714785799085",
+                "droneId": "1.2.20;39fde137",
+                "device": "internal-temperature"
+            },
+            {
+                "eventTimestamp": "2020-05-14T17:08:48.0433339Z",
+                "measurement": "46.523741308533445",
+                "droneId": "1.2.21;defee675",
+                "device": "internal-temperature"
             }
-        }
-    ]
-}
+        ]
+    }
+]

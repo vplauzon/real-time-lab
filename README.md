@@ -37,17 +37,21 @@ The hands on lab modules are based on that solution.
 
 ## Hands on Lab Modules
 
-The different modules contain instructions about the challenges of the module.  They also contain a suggested solution.
+Each module contain a challenge and objectives.
 
-We recommend you try to do the module on your own as much as possible in order to get challenged and get more benefit out of the lab.
+They also contain a suggested solution.
+
+We recommend trying the modules without looking at the suggested solution first.  This would maximize the challenges and therefore the benefits.
 
 ### Module 1 - Know the data
 
-This is the first module in which we'll explore the data we are going to work with.
+In this first module, we'll explore the data we are going to work with.
 
-*	Provision a Azure Data Explorer (Kusto) cluster
+Objectives:
+
+*	Provision an Azure Data Explorer (Kusto) cluster
 *   Query telemetry samples
-*   Prepare ingestion by developing queries
+*   Prepare ingestion by developing queries to transform the raw data
 
 Go to [module 1 instructions](module-1).
 
