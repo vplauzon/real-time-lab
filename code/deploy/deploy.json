@@ -1,0 +1,169 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {
+    "Unique ID": "[uniqueString(concat(resourceGroup().id, 'iot'))]",
+    "Log Analytics Name": "[concat('log-analytics-', variables('Unique ID'))]",
+    "Event Hub Namespace": "[concat('event-hub-', variables('Unique ID'))]",
+    "Telemetry Hub": "telemetry",
+    "Hub Owner": "hub-owner",
+    "Hub Writer": "hub-writer",
+    "Hub Reader": "hub-reader",
+    "Consumer Group Count": 20,
+    "Aci Name": "[concat('aci-', variables('Unique ID'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[variables('Log Analytics Name')]",
+      "apiVersion": "2015-11-01-preview",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        }
+      },
+      "dependsOn": [
+      ]
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "name": "[variables('Event Hub Namespace')]",
+      "apiVersion": "2017-04-01",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard",
+        "capacity": 1
+      },
+      "properties": {
+        "isAutoInflateEnabled": false,
+        "kafkaEnabled": false
+      },
+      "resources": [
+        {
+          "type": "eventhubs",
+          "name": "[variables('Telemetry Hub')]",
+          "apiVersion": "2017-04-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.EventHub/namespaces', variables('Event Hub Namespace'))]"
+          ],
+          "properties": {
+            "messageRetentionInDays": 7,
+            "partitionCount": 32
+          },
+          "resources": [
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Owner')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Manage",
+                  "Send",
+                  "Listen"
+                ]
+              }
+            },
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Writer')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Send"
+                ]
+              }
+            },
+            {
+              "type": "AuthorizationRules",
+              "name": "[variables('Hub Reader')]",
+              "apiVersion": "2017-04-01",
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+              ],
+              "properties": {
+                "rights": [
+                  "Listen"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+      "name": "[concat(variables('Event Hub Namespace'), '/', variables('Telemetry Hub'), '/group-', add(1, copyIndex()))]",
+      "apiVersion": "2017-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+      ],
+      "copy": {
+        "name": "Consumer Group Copy",
+        "count": "[variables('Consumer Group Count')]"
+      },
+      "properties": {
+      }
+    },
+    {
+      "apiVersion": "2018-10-01",
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "name": "[variables('Aci Name')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('Event Hub Namespace'), variables('Telemetry Hub'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "main",
+            "properties": {
+              "image": "vplauzon/drone-simulation:experimental",
+              "environmentVariables": [
+                {
+                  "name": "APP_INSIGHTS_KEY",
+                  "value": "ABC"
+                },
+                {
+                  "name": "EVENT_HUB_CONN_STRING",
+                  "value": "[listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('Event Hub Namespace'), variables('Telemetry Hub'), variables('Hub Writer')), '2017-04-01').primaryConnectionString]"
+                },
+                {
+                  "name": "GATEWAY_COUNT",
+                  "value": "20"
+                },
+                {
+                  "name": "DRONE_PER_GATEWAY",
+                  "value": "50"
+                },
+                {
+                  "name": "SNAP_INTERNAL_TEMPERATURE_LIKELIHOOD",
+                  "value": "0.001"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1,
+                  "cpu": 1
+                }
+              }
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "osType": "Linux"
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -1,0 +1,80 @@
+# Help:  https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - code/*
+pr: none
+
+resources:
+- repo: self
+
+variables:
+  sub-folder:  module-2/code
+  mainVersion: '0.1'
+  tag: '$(mainVersion).$(Build.BuildId)'
+  image-name:  vplauzon/drone-simulation
+  docker-registry-endpoint:  'vplauzon-docker-hub'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    # Publish the function project
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet build'
+      inputs:
+        command: build
+        publishWebProjects: false
+        projects: '$(sub-folder)/**/*.csproj'
+        arguments: '-o $(sub-folder)/cicd/bin'
+        modifyOutputPath: true
+    # - task: Bash@3
+    #   displayName: Create Version File
+    #   inputs:
+    #     targetType: 'filePath'
+    #     filePath: $(sub-folder)/cicd/scripts/create-version-file.sh
+    #     arguments: $(tag) $(sub-folder)/cicd/container-content/version.txt
+    - task: Docker@2
+      displayName: Build image
+      inputs:
+        repository: '$(image-name)'
+        command: 'build'
+        Dockerfile: '$(sub-folder)/cicd/Dockerfile'
+        tags: '$(tag)'
+    - task: Docker@2
+      displayName: Push image
+      inputs:
+        containerRegistry: '$(docker-registry-endpoint)'
+        repository: '$(image-name)'
+        command: 'push'
+        tags: '$(tag)'
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish artifact:  scripts"
+      inputs:
+        PathtoPublish: $(sub-folder)/cicd
+        ArtifactName: scripts
+- stage: Experimental
+  displayName: Experimental
+  dependsOn:  Build
+  jobs:
+    - template: tag-jobs.yaml
+      parameters:
+        environment:  experimental
+        targetVersion:  experimental
+- stage: Production
+  displayName: Production
+  dependsOn:  Experimental
+  jobs:
+    - template: tag-jobs.yaml
+      parameters:
+        environment:  production
+        targetVersion:  $(mainVersion)
