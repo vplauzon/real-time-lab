@@ -59,8 +59,8 @@ Go to [module 1 instructions](module-1).
 
 In this module we will setup the real time ingestion of data into our Kusto Cluster.
 
-*	Setup a generator of data for Azure Event Hub using Azure Container Instance (ACI)
-*   Setup ingestion in Azure Data Explorer
+*	Setup a generator of data for Azure Event Hub
+*   Setup raw ingestion in Azure Data Explorer
 
 Go to [module 2 instructions](module-2).
 
