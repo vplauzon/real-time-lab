@@ -35,3 +35,4 @@ For step 8, let's look at a sample drone ID:  `1.2.19;df12e8f6`.  This is actual
 
 ## Suggested Solution
 
+The suggested solution is documented in a [Kusto Query Language (KQL) file](sample-queries.kql).
