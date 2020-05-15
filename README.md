@@ -80,7 +80,9 @@ Go to [module 3 instructions](module-3).
 
 Now that we have data ingested in real time, we are going to query it to get insights.
 
-*   Compute ingestion latency
+Objectives:
+
+*   Look at ingestion latency
 *   Query and chart data
 *   Look at Azure Data Explorer metrics (monitoring)
 

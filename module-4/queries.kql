@@ -1,5 +1,6 @@
 //  How many records in telemetry?
 //  We should see this increase if we wait for the duration of the batch policy
+//  (step 1)
 telemetry
 | count
 
@@ -8,21 +9,25 @@ telemetry
 | sample 50
 
 //  Let's look at the latency of messages versus events
+//  (part of step 2)
 telemetry
 | project latency=messageTimestamp-eventTimestamp
 | summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
 
 //  Let's look at the latency of messages
+//  (part of step 2)
 telemetry
 | project latency=ingestion_time()-messageTimestamp
 | summarize minimum=min(latency), average=avg(latency), maximum=max(latency)
 
 //  Look at records ingested over time (per minute)
+//  (step 3)
 telemetry
 | summarize count() by bin(ingestion_time(), 1m)
 | render timechart 
 
 //  Look at average period between messages from one gateway
+//  (step 4)
 telemetry
 | distinct gatewayId, messageId, messageTimestamp
 | order by gatewayId, messageTimestamp asc
@@ -31,6 +36,7 @@ telemetry
 | summarize avg(delta)
 
 //  Look at average period between events from one device on a drone
+//  (step 5)
 telemetry
 | distinct droneId, device, eventTimestamp
 | order by droneId, device, eventTimestamp asc
@@ -38,8 +44,8 @@ telemetry
 | where isnotnull(delta)
 | summarize avg(delta) by device
 
-
 //  Look at a sample of GPS coordinates
+//  (step 6)
 telemetry
 | where device == "GPS"
 | where eventTimestamp > ago(2m)
@@ -48,6 +54,7 @@ telemetry
 | render scatterchart with (kind=map)
 
 //  Look at GPS trajectory of a single sample drone
+//  (step 7)
 let sampleDroneId = toscalar(
     telemetry
     | where device == "GPS"
@@ -79,6 +86,7 @@ sampleDroneIds
 | render scatterchart with (kind=map)
 
 //  Look at the speed of a single sample drone
+//  (step 8)
 let sampleDroneId = toscalar(
     telemetry
     //  Look for drones that have recently pushed telemetry
@@ -102,6 +110,7 @@ telemetry
 | render timechart
 
 //  Look at the external temperature of a sample drone
+//  (step 9)
 let sampleDroneId = toscalar(
     telemetry
     //  Look for drones that have recently pushed telemetry
@@ -115,6 +124,7 @@ telemetry
 | render timechart 
 
 //  Look at both external & internal temperature of a sample drone
+//  (step 10)
 let sampleDroneId = toscalar(
     telemetry
     //  Look for drones that have recently pushed telemetry
@@ -127,21 +137,3 @@ telemetry
 | project eventTimestamp, temperature, device
 | render timechart
 
-
-
-//  Delete all records in telemetry
-.drop extents from telemetry 
-
-.show table  telemetry extents
-| project RowCount, MinCreatedOn, MaxCreatedOn, isDifferent=MinCreatedOn!=MaxCreatedOn
-| order by MinCreatedOn asc, MaxCreatedOn asc
-
-landing
-| count
-
-landingTransformed
-| count 
-
-.show table landingTransformed extents
-| project RowCount, MinCreatedOn, MaxCreatedOn, isDifferent=MinCreatedOn!=MaxCreatedOn
-| order by MinCreatedOn asc, MaxCreatedOn asc
