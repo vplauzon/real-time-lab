@@ -2,17 +2,17 @@
 //  landing
 //////////////////////////////////////////////////////////////////////////////////
 
-//  Create a landing table for telemetry
+//  Create a landing table for telemetry (this should have been done in previous module)
 .create table landing(document:dynamic)
 
-//  Create the mapping from JSON ingestion to landing table
+//  Create the mapping from JSON ingestion to landing table (this should have been done in previous module)
 .create table landing ingestion json mapping 'landingMapping' '[{"column":"document","path":"$","datatype":"dynamic"}]'
+
+//  Alter ingestion policy to ingest more often than default 5 minutes (this should have been done in previous module)
+.alter table landing policy ingestionbatching "{'MaximumBatchingTimeSpan': '0:0:10', 'MaximumNumberOfItems': 10000}"
 
 //  Alter retention policy as this is only for end-user queries
 .alter table landing policy retention "{'SoftDeletePeriod': '0:10:00', 'Recoverability':'Enabled'}"
-
-//  Alter ingestion policy to ingest more often than default (5 minutes)
-.alter table landing policy ingestionbatching "{'MaximumBatchingTimeSpan': '0:0:10', 'MaximumNumberOfItems': 10000}"
 
 //////////////////////////////////////////////////////////////////////////////////
 //  landingTransformed
@@ -43,17 +43,11 @@
 }
 
 //  Create an intermediate table for telemetry
-.create table landingTransformed(
-    gatewayId:string,
-    messageId:string,
-    messageTimestamp:datetime,
-    hubSequenceNumber:int,
-    hubEnqueudTime:datetime,
-    hubOffset:int,
-    eventTimestamp:datetime,
-    droneId:string,
-    device:string,
-    measurement:dynamic)
+//  Instead of using a .create table, we use a .set to get
+//  the schema from the function populating it
+.set landingTransformed <|
+    parseLanding()
+    | limit 0
 
 //  Alter retention policy as this is also only for end-user queries
 .alter table landingTransformed policy retention "{'SoftDeletePeriod': '0:10:00', 'Recoverability':'Enabled'}"
@@ -90,40 +84,19 @@
 }
 
 //  Create the telemetry table
-.create table telemetry(
-    gatewayId:string,
-    messageId:string,
-    messageTimestamp:datetime,
-    droneId:string,
-    droneVersion:string,
-    eventTimestamp:datetime,
-    device:string,
-    temperature:double,
-    longitude:double,
-    latitude:double,
-    hubSequenceNumber:int,
-    hubEnqueudTime:datetime,
-    hubOffset:int
-)
+.set telemetry <|
+    parseTransformedTelemetry()
+    | limit 0
 
 //  Create an update policy to transfer landingTransformed to telemetry
 .alter table telemetry policy update
 @'[{"IsEnabled": true, "Source": "landingTransformed", "Query": "parseTransformedTelemetry", "IsTransactional": true, "PropagateIngestionProperties": false}]'
 
-
-.show table landing extents
-
-.show table landingTransformed extents 
-
+//  Test if ingestion reaches intermediary table
 landingTransformed
+| limit 10
 
+//  Test if ingestion reaches final table
 telemetry
 | limit 10
 
-telemetry
-| count 
-
-telemetry
-| summarize max(hubEnqueudTime)
-
-.show table telemetry extents 

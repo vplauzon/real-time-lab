@@ -59,17 +59,20 @@ Go to [module 1 instructions](module-1).
 
 In this module we will setup the real time ingestion of data into our Kusto Cluster.
 
-*	Setup a generator of data for Azure Event Hub
-*   Setup raw ingestion in Azure Data Explorer
+Objectives:
+
+*	Setup a simulator of IoT data for Azure Event Hub
+*   Continuously ingest raw data in Azure Data Explorer
 
 Go to [module 2 instructions](module-2).
 
 ### Module 3 - Transform the data at ingestion time
 
-In this module we will take the raw JSON data we ingested in Module 2 and transform it into strongly-typed data, at ingestion time, using the queries we developped in module 1.
+In this module we will take the raw JSON data we setup for continuous ingestion in Module 2 and continuously transform it into strongly-typed data, using the queries we developped in module 1.
 
-*   Create Stored Function
-*   Setup update policies
+Objectives:
+
+*   Get strong-type table populated in near-real time
 
 Go to [module 3 instructions](module-3).
 

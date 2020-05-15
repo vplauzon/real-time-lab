@@ -8,10 +8,16 @@ We suggest the following steps for this module:
 
 1. Attendees (or instructor) setup the simulator
 1. Create a landing table in Kusto (see [.create table](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/create-table-command))
+1. Create an ingestion mapping to map the content from Event Hub to the table (see [.create ingestion mapping](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/create-ingestion-mapping-command))
+1. Alter the ingestion batching policy (see [ingestion batching policy](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/batchingpolicy)) to ingest every 10 seconds
 1. Setup real time ingestion (see [Ingest data from Event Hub into Azure Data Explorer](https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-event-hub))
 1. Test the data is getting to the landing table
 
 For step 2, we recommend creating a landing table with only one column of type dynamic.
+
+Similarly, for step 3, we recommend creating a trivial mapping to the only column.
+
+In step 4, we increase the frequency of ingestion in order to see the data earlier.  This also increase the compute demanded on the cluster.  For this reason, this should be set to a **needed** value.  For instance, if analysts only need 2 minutes latency, this should be set to 2 minutes.
 
 ### Drone events simulation
 
@@ -58,7 +64,21 @@ Step 2 consists in creating a landing table:
 .create table landing(document:dynamic)
 ```
 
-While step 4 consists in testing that table is receiving data:
+Step 3 consists in creating the mapping:
+
+```sql
+//  Create the mapping from JSON ingestion to landing table
+.create table landing ingestion json mapping 'landingMapping' '[{"column":"document","path":"$","datatype":"dynamic"}]'
+```
+
+Step 4 consists in altering the ingestion batching policy:
+
+```sql
+//  Alter ingestion policy to ingest more often than default 5 minutes
+.alter table landing policy ingestionbatching "{'MaximumBatchingTimeSpan': '0:0:10', 'MaximumNumberOfItems': 10000}"
+```
+
+Step 6 consists in testing that table is receiving data:
 
 ```sql
 //  Testing that table (after setting up ingestion)
