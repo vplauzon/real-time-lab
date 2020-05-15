@@ -90,7 +90,12 @@ Go to [module 4 instructions](module-4).
 
 ### Module 5 - Time series
 
-Use Kusto's time series' functionalities to detect failure on one of the sensor.
+In this module, we'll query to the next level.  We'll look at each drone's telemetry as its own time series and try to find anomalies.
+
+Objectives:
+
+* Get comfortable with time series
+* Analyse failures in drones using time series tooling
 
 ### Module 6 - Imperfect telemetry
 
@@ -111,8 +116,4 @@ Go to [module 5 instructions](module-5).
 ### Module 8 - Reporting
 
 *	Setup Power BI to query near real time data
-
-### Module 9 - Monitoring
-
-*	...
 

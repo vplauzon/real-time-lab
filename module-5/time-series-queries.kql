@@ -1,5 +1,6 @@
 //  Compare a few drones' internal temperatures
 //  It seems to be mostly noise ; hard to analyse the difference
+//  (step 1)
 let sampleDroneIds =
     telemetry
     //  Look for drones that have recently pushed telemetry
@@ -13,9 +14,10 @@ sampleDroneIds
 | project eventTimestamp, temperature, droneId, device
 | render timechart
 
-//  Find how many drones where the internal temperature device snapped
+//  Find how many drones where the internal temperature device failed
 //  Let's find the drones that had an internal temperature telemetry in
 //  the last 2 minutes
+//  (step 2)
 let workingDroneIds =
     telemetry
     | where device=="internal-temperature"
@@ -50,8 +52,9 @@ telemetry
 internalTemperatureStatus()
 | getschema
 
-//  Let's plot the internal temperature for a few snapped sensors
+//  Let's plot the internal temperature for a few failed sensors
 //  We need the time range of the series
+//  (step 3)
 let minTime = toscalar(telemetry
     | summarize min(eventTimestamp));
 let maxTime = toscalar(telemetry
@@ -65,6 +68,19 @@ internalTemperatureStatus()
 | make-series temperature=avg(temperature) default=double(null) on eventTimestamp in range(minTime, maxTime, 1m) by droneId
 | render timechart
 //  This confirms the assumption the sensor first gives lower readings before snapping
+
+//  Can we detect a snapped sensor using linear fit?
+internalTemperatureStatus()
+| join kind=inner telemetry on droneId
+| where device=="internal-temperature"
+| summarize temperature=avg(temperature) by droneId, isInternalTemperatureWorking, eventTimestamp=bin(eventTimestamp, 1m)
+| order by droneId, eventTimestamp asc
+| summarize temperature=make_list(temperature) by droneId, isInternalTemperatureWorking
+| extend fit = series_fit_line_dynamic(temperature)
+| project slope=todouble(fit.slope), isInternalTemperatureWorking
+| project slope, isInternalTemperatureWorking
+| render scatterchart
+//  That discriminate quite nicely
 
 //  Can we detect a snapped sensor using 2 segment linear regression?
 //  Let's look at the 2 segment slopes against the predicate
@@ -85,19 +101,6 @@ internalTemperatureStatus()
 | render scatterchart
 //  It doesn't seem to discriminate well
 
-//  Instead, let's try a simple linear fit
-internalTemperatureStatus()
-| join kind=inner telemetry on droneId
-| where device=="internal-temperature"
-| summarize temperature=avg(temperature) by droneId, isInternalTemperatureWorking, eventTimestamp=bin(eventTimestamp, 1m)
-| order by droneId, eventTimestamp asc
-| summarize temperature=make_list(temperature) by droneId, isInternalTemperatureWorking
-| extend fit = series_fit_line_dynamic(temperature)
-| project slope=todouble(fit.slope), isInternalTemperatureWorking
-| project slope, isInternalTemperatureWorking
-| render scatterchart
-//  That discriminate quite nicely
-
 //  Let's try with anomaly detection
 internalTemperatureStatus()
 | where isInternalTemperatureWorking==false
@@ -107,7 +110,7 @@ internalTemperatureStatus()
 | summarize temperature=avg(temperature) by droneId, isInternalTemperatureWorking, eventTimestamp=bin(eventTimestamp, 1m)
 | order by droneId, eventTimestamp asc
 | summarize temperature=make_list(temperature), eventTimestamp=make_list(eventTimestamp) by droneId, isInternalTemperatureWorking
-| extend (flag, score) = series_decompose_anomalies(temperature, 0.7)
+| extend (flag, score) = series_decompose_anomalies(temperature)
 | project eventTimestamp, temperature, flag, droneId
 | render anomalychart with (anomalycolumns=flag)
 //  That also seem to discriminate nicely
