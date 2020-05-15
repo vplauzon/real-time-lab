@@ -14,7 +14,8 @@ We suggest the following steps for this module:
 1. Plot the speed (see [geo_distance_2points function](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/geo-distance-2points-function)) of a sample drone over time
 1.  Plot the external temperature of a sample drone
 1.  Plot both the internal and external temperature of a sample drone
-
+1.  Look at the cluster metrics if you can see the impact of queries on CPU (in the portal)
+1.  Look at logs in Kusto (see [.show command-and-queries](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/management/commands-and-queries))
 
 ## Suggested Solution
 

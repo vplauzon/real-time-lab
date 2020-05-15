@@ -137,3 +137,23 @@ telemetry
 | project eventTimestamp, temperature, device
 | render timechart
 
+//  Look at command & query logs
+//  (step 12)
+.show commands-and-queries
+| limit 10
+
+//  Find out about command types
+.show commands-and-queries
+| distinct CommandType
+| limit 10
+
+//  Let's look at queries
+.show commands-and-queries
+| where CommandType == "Query"
+| limit 10
+
+//  Let's look at the queries requiring the most CPU
+.show commands-and-queries
+| where CommandType == "Query"
+| sort by TotalCpu desc
+| limit 10
