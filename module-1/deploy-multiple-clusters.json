@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterCount": {
+            "type": "int",
+            "minValue": 1,
+            "metadata": {
+                "description": "Number of dev-cluster to deploy"
+            }
+        }
+    },
+    "variables": {
+        "Unique ID": "[uniqueString(resourceGroup().id)]",
+        "Cluster Prefix": "[concat('cluster', variables('Unique ID'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Kusto/clusters",
+            "apiVersion": "2019-05-15",
+            "copy": {
+                "name": "cluster-copy",
+                "count": "[parameters('clusterCount')]"
+            },
+            "name": "[concat(variables('Cluster Prefix'), copyIndex())]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Dev(No SLA)_Standard_D11_v2",
+                "capacity": "1",
+                "tier": "basic"
+            },
+            "properties": {
+            },
+            "resources": [
+            ]
+        }
+    ],
+    "outputs": {
+    }
+}
