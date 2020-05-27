@@ -10,7 +10,7 @@ The design session should be between 30 to 60 minutes.  This is really to prepar
 
 Have each team present their design.  Encourage other team to question and challenge each other.  This is a learning exercise. Different teams typically focus more strongly on different aspects, so each team bring a different perspective.
 
-## Preferred soluiton
+## Preferred solution
 
 Present the [preferred solution](real-time-preferred-solution.vsdx).
 

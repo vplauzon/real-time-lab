@@ -17,8 +17,8 @@ They've recently invested in their field gateway to enable them to connect on th
 They have the following business requirements:
 
 1.   Focus on the non-video device telemetry (e.g. temperature, pressure, GPS position, etc.)
-1.   Managed solution:  they do not want to manage VMs or complex infrastructure
-1.   Security:  part of their data is sensitive and so we need to control access and avoid data-exfiltration
+1.   Managed solution:  they want to focus on their business instead of managing hardware or cloud infrastructure
+1.   Security:  part of their data is sensitive and so we need to control access and avoid data-exfiltration for all data
 1.   Monitoring:  they need to monitor the platform (e.g. CPU usage)
 1.   Real Time:  they want the data to be available for analysis in less than one minute latency
 1.   Ad Hoc queries:  they want the platform to be able to perform exploratory query without shaping the data (e.g. designing indexes) in a special way for the queries
