@@ -67,7 +67,7 @@
     | parse droneId with droneVersion ";" droneId
     | extend longitude=iff(device=="GPS", todouble(measurement.coordinates[0]), double(null))
     | extend latitude=iff(device=="GPS", todouble(measurement.coordinates[1]), double(null))
-    | extend temparature=iif(device=="external-temperature" or device=="internal-temperature", todouble(measurement), double(null))
+    | extend temperature=iif(device=="external-temperature" or device=="internal-temperature", todouble(measurement), double(null))
     | project gatewayId,
         messageId,
         messageTimestamp,
@@ -75,7 +75,7 @@
         droneVersion,
         eventTimestamp,
         device,
-        temparature,
+        temperature,
         longitude,
         latitude,
         hubSequenceNumber,
