@@ -97,6 +97,8 @@ Objectives:
 * Get comfortable with time series
 * Analyse failures in drones using time series tooling
 
+Go to [module 5 instructions](module-5).
+
 ### Module 6 - Imperfect telemetry
 
 *	Changing upstream process to reveal "real" telemetry with late arrivals + duplicates
