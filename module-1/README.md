@@ -10,6 +10,8 @@ Drones have the following devices onboard:
 * Internal Temperature (in [Celcius](https://en.wikipedia.org/wiki/Celsius))
 * GPS (as [GeoJSON](https://geojson.org/) point, cf [RFC 7946](https://tools.ietf.org/html/rfc7946))
 
+This is a **query only** module.  There is no need to create a table.  Look at the notes below for hints at how to handle the JSON payload.
+
 We suggest the following steps for this module:
 
 1. Provision an Azure Data Explorer (ADX, Kusto) cluster
