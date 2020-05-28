@@ -13,6 +13,10 @@ We suggest the following steps for this module:
 1. Setup real time ingestion (see [Ingest data from Event Hub into Azure Data Explorer](https://docs.microsoft.com/en-us/azure/data-explorer/ingest-data-event-hub))
 1. Test the data is getting to the landing table
 
+For step 1, in order to deploy the simulator, the [ARM template is available here](../code/deploy/deploy.json) and can be deployed with:
+
+[![Deploy button](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fvplauzon%2Freal-time-lab%2Fmaster%2Fcode%2Fdeploy%2Fdeploy.json)
+
 For step 2, we recommend creating a landing table with only one column of type dynamic.
 
 Similarly, for step 3, we recommend creating a trivial mapping to the only column.
