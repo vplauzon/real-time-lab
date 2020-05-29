@@ -5,7 +5,6 @@
   },
   "variables": {
     "Unique ID": "[uniqueString(concat(resourceGroup().id, 'iot'))]",
-    "Log Analytics Name": "[concat('log-analytics-', variables('Unique ID'))]",
     "Event Hub Namespace": "[concat('event-hub-', variables('Unique ID'))]",
     "Telemetry Hub": "telemetry",
     "Hub Owner": "hub-owner",
@@ -15,19 +14,6 @@
     "Aci Name": "[concat('aci-', variables('Unique ID'))]"
   },
   "resources": [
-    {
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "name": "[variables('Log Analytics Name')]",
-      "apiVersion": "2015-11-01-preview",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "sku": {
-          "name": "PerGB2018"
-        }
-      },
-      "dependsOn": [
-      ]
-    },
     {
       "type": "Microsoft.EventHub/namespaces",
       "name": "[variables('Event Hub Namespace')]",
@@ -147,7 +133,7 @@
                 },
                 {
                   "name": "SNAP_INTERNAL_TEMPERATURE_LIKELIHOOD",
-                  "value": "0.001"
+                  "value": "0.0003"
                 }
               ],
               "resources": {
