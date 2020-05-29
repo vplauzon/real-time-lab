@@ -1,5 +1,7 @@
 # Instructor instructions
 
+There is a [PowerPoint deck](real-time-analytics.pptx) template in this folder.  We suggest to adjust it to your context.
+
 ## Design session
 
 Review the business scenario and business requirements with audience.
