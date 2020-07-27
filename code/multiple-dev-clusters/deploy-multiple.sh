@@ -21,5 +21,5 @@ echo
 echo "Deploying ARM template"
 
 az deployment group create -n "deploy-$(uuidgen)" -g $rg \
-    --template-file deploy-multiple.json 
+    --template-file deploy-multiple.json \
     --parameters clusterPrefix=$clusterPrefix clusterCount=$clusterCount

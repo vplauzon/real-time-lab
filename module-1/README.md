@@ -15,6 +15,9 @@ This is a **query only** module.  There is no need to create a table.  Look at t
 We suggest the following steps for this module:
 
 1. Provision an Azure Data Explorer (ADX, Kusto) cluster
+To deploy multiple clusters, it is likely more efficient to use the following ARM Template:
+[![Deploy button](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fvplauzon%2Freal-time-lab%2Fmaster%2Fcode%2Fmultiple-dev-clusters%2Fdeploy-multiple.json)
+
 1. [Create a database](https://docs.microsoft.com/en-us/azure/data-explorer/create-cluster-database-portal#create-a-database) named "telemetry"
 1. In Web UI, integrate the sample in a query (hint:  paste it and use [dynamic literals](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/scalar-data-types/dynamic#dynamic-literals))
 1. Explode each gateway message on its row (hint:  look at [mv-expand operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/mvexpandoperator))

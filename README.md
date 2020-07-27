@@ -37,7 +37,7 @@ The hands on lab modules are based on that solution.
 
 ## Hands on Lab Modules
 
-Each module contain a challenge and objectives.
+Each module contains a challenge and objectives.
 
 They also contain a suggested solution.
 

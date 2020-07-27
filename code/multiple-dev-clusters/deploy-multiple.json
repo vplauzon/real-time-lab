@@ -25,7 +25,7 @@
         "name":"cluster-copy",
         "count":"[parameters('clusterCount')]"
       },
-      "name": "[concat(parameters('clusterPrefix'), '-', copyIndex())]",
+      "name": "[concat(parameters('clusterPrefix'), copyIndex())]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "Dev(No SLA)_Standard_D11_v2",
