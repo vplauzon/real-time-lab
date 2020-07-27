@@ -68,7 +68,7 @@ Go to [module 2 instructions](module-2).
 
 ### Module 3 - Transform the data at ingestion time
 
-In this module we will take the raw JSON data we setup for continuous ingestion in Module 2 and continuously transform it into strongly-typed data, using the queries we developped in module 1.
+In this module we will take the raw JSON data we setup for continuous ingestion in Module 2 and continuously transform it into strongly-typed data, using the queries we developed in module 1.
 
 Objectives:
 
