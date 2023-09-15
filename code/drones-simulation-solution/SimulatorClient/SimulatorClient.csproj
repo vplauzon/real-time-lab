@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AppInsights.TelemetryInitializers" Version="1.1.908" />
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.9.3" />
   </ItemGroup>
 

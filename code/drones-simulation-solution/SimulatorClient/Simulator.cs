@@ -1,7 +1,6 @@
 using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Consumer;
 using Azure.Messaging.EventHubs.Producer;
-using Microsoft.ApplicationInsights;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
@@ -19,13 +18,11 @@ namespace SimulatorClient
         };
 
         private readonly SimulatorConfiguration _configuration;
-        private readonly TelemetryClient _telemetryClient;
         private readonly EventHubProducerClient _producerClient;
 
-        public Simulator(SimulatorConfiguration configuration, TelemetryClient telemetryClient)
+        public Simulator(SimulatorConfiguration configuration)
         {
             _configuration = configuration;
-            _telemetryClient = telemetryClient;
             _producerClient =
                 new EventHubProducerClient(_configuration.EventHubConnectionString);
         }
